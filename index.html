@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="El Templo">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#e8ab30",
+                        "terracotta": "#c68667",
+                        "background-light": "#fcfaf8",
+                        "background-dark": "#211c11",
+                        "sand": "#f3efe7",
+                        "zen-gray": "#977f4e",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "sans-serif"],
+                        "serif": ["Playfair Display", "serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-image: radial-gradient(circle at 50% 50%, rgba(232, 171, 48, 0.03) 0%, transparent 100%);
+        }
+        .serif-text {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Acordeón de Rituales */
+        .category-header {
+            position: relative;
+            cursor: pointer;
+            overflow: hidden;
+            border-radius: 1rem;
+            height: 120px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        @media (min-width: 768px) {
+            .category-header {
+                height: 180px;
+            }
+        }
+
+        .category-header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header.active {
+            border: 2px solid var(--tw-primary, #e8ab30);
+        }
+
+        .category-banner {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.8s ease;
+            filter: brightness(0.7);
+        }
+
+        .category-header:hover .category-banner {
+            transform: scale(1.05);
+        }
+
+        .category-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
+            opacity: 0;
+        }
+
+        .category-content.open {
+            max-height: 5000px; /* Suficiente para todos los rituales */
+            opacity: 1;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .accordion-icon {
+            transition: transform 0.5s ease;
+        }
+
+        .category-header.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        /* Arreglos Tablet / iPad */
+        @media (max-height: 1200px) {
+            .btn-main-grid {
+                aspect-ratio: auto !important;
+                padding-top: 2rem !important;
+                padding-bottom: 2rem !important;
+            }
+            .btn-main-grid .size-20 {
+                width: 4rem !important;
+                height: 4rem !important;
+                margin-bottom: 0.5rem !important;
+            }
+            #banner-container {
+                aspect-ratio: 16/4.5 !important;
+            }
+        }
+
+        /* Estilos Paneles y Transiciones Suaves */
+        .content-panel-layer, .admin-panel-layer, #dni-modal, #pin-modal {
+            background-color: #ffffff;
+            z-index: 300;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out !important;
+            transform: scale(1.01);
+            display: flex !important;
+        }
+
+        .content-panel-layer, .admin-panel-layer, #dni-modal, #pin-modal {
+            position: fixed;
+            inset: 0;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+
+        .panel-active {
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            transform: scale(1) !important;
+        }
+
+        .hidden-transition {
+            display: none !important;
+        }
+
+        #dni-modal, #pin-modal {
+            background-color: rgba(0, 0, 0, 0.6) !important;
+            backdrop-filter: blur(4px);
+        }
+        
+        /* Headers Fijos y Compactos */
+        .panel-header {
+            padding-top: env(safe-area-inset-top, 1.5rem);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .panel-title {
+            font-size: 1.25rem !important;
+            font-weight: 700 !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.1em !important;
+        }
+
+        /* Limitar altura y prevenir scroll innecesario */
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .main-scroll-container {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #banner-container {
+            aspect-ratio: 21/5 !important;
+        }
+    </style>
+</head>
+<body class="bg-background-light text-slate-900 selection:bg-primary/30 h-screen overflow-hidden">
+<div class="main-scroll-container">
+    <div class="relative flex flex-col p-4 md:p-8 lg:p-12 min-h-screen">
+        <header class="flex items-center justify-between mb-10">
+            <div class="flex items-center gap-3 text-primary">
+                <div class="size-10">
+                    <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path></svg>
+                </div>
+                <h1 class="text-2xl md:text-3xl font-bold tracking-[0.1em] uppercase text-slate-800">El Templo</h1>
+            </div>
+            <div class="w-20 hidden md:block"></div> <!-- Spacer to offset logo if needed -->
+        </header>
+        <main class="flex flex-col gap-6">
+            <!-- Banner de Ofertas y Eventos Centrado -->
+            <div class="flex justify-center w-full">
+                <div id="banner-container" class="w-full max-w-5xl bg-white border border-sand rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer relative group">
+                    <div id="banner-slider" class="w-full h-full flex transition-transform duration-1000 ease-in-out font-serif italic text-zen-gray/40">
+                        <div class="min-w-full h-full flex items-center justify-center bg-sand/10 animate-pulse">
+                            <span>Cargando ofertas...</span>
+                        </div>
+                    </div>
+                    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
+                <!-- Los botones del grid principal ahora en una sola fila o 2x2 más compacto -->
+            <button id="btn-clases" class="btn-main-grid group flex flex-col items-center justify-center aspect-[4/3] bg-white border border-sand hover:border-primary/50 rounded-xl transition-all duration-500 shadow-sm hover:shadow-lg active:scale-[0.98]">
+                <div class="size-20 mb-4 flex items-center justify-center rounded-full bg-sand group-hover:bg-primary/10 transition-colors">
+                    <span class="material-symbols-outlined text-4xl text-zen-gray group-hover:text-primary transition-colors">auto_awesome</span>
+                </div>
+                <span class="text-xl font-light tracking-wide text-slate-800 uppercase text-center px-4">Talleres</span>
+            </button>
+            <button id="btn-talleres" class="btn-main-grid group flex flex-col items-center justify-center aspect-[4/3] bg-white border border-sand hover:border-primary/50 rounded-xl transition-all duration-500 shadow-sm hover:shadow-lg active:scale-[0.98]">
+                <div class="size-20 mb-4 flex items-center justify-center rounded-full bg-sand group-hover:bg-primary/10 transition-colors">
+                    <span class="material-symbols-outlined text-4xl text-zen-gray group-hover:text-primary transition-colors">fitness_center</span>
+                </div>
+                <span class="text-xl font-light tracking-wide text-slate-800 uppercase text-center px-4">Clases</span>
+            </button>
+            <button id="btn-rituales" class="btn-main-grid group flex flex-col items-center justify-center aspect-[4/3] bg-white border border-sand hover:border-primary/50 rounded-xl transition-all duration-500 shadow-sm hover:shadow-lg active:scale-[0.98]">
+                <div class="size-20 mb-4 flex items-center justify-center rounded-full bg-sand group-hover:bg-primary/10 transition-colors">
+                    <span class="material-symbols-outlined text-4xl text-zen-gray group-hover:text-primary transition-colors">spa</span>
+                </div>
+                <span class="text-xl font-light tracking-wide text-slate-800 uppercase text-center px-4">Experiencias</span>
+            </button>
+            <button id="btn-citas" class="btn-main-grid group flex flex-col items-center justify-center aspect-[4/3] bg-white border border-sand hover:border-primary/50 rounded-xl transition-all duration-500 shadow-sm hover:shadow-lg active:scale-[0.98]">
+                <div class="size-20 mb-4 flex items-center justify-center rounded-full bg-sand group-hover:bg-primary/10 transition-colors">
+                    <span class="material-symbols-outlined text-4xl text-zen-gray group-hover:text-primary transition-colors">calendar_today</span>
+                </div>
+                <span class="text-xl font-light tracking-wide text-slate-800 uppercase">Únete</span>
+                <span class="text-xs font-medium text-zen-gray/70 mt-1 uppercase tracking-widest leading-none">Citas de Hoy</span>
+            </button>
+        </div>
+
+        <footer class="mt-auto py-6 grid grid-cols-1 md:grid-cols-3 items-center w-full max-w-5xl mx-auto border-t border-sand/30">
+            <!-- Reloj Inferior Izquierda -->
+            <div id="clock-container" class="relative z-[100] flex items-center gap-3 text-slate-800 cursor-pointer select-none px-4 py-2 rounded-xl hover:bg-black/5 transition-all">
+                <span class="material-symbols-outlined text-xl">schedule</span>
+                <div class="flex flex-col">
+                    <p id="time-display" class="text-base font-bold leading-none">10:45 AM</p>
+                    <p id="date-display" class="text-[10px] text-zen-gray uppercase tracking-widest mt-1">Lunes, 24 de Mayo</p>
+                </div>
+            </div>
+
+            <!-- QRs en el Medio -->
+            <div class="flex justify-center gap-8">
+                <div class="flex items-center gap-2">
+                    <div class="size-12 bg-white border border-sand p-1.5 rounded-lg flex items-center justify-center shadow-sm">
+                        <div class="size-full bg-slate-50 flex items-center justify-center border border-dashed border-slate-200">
+                            <span class="text-[7px] text-slate-400 font-bold uppercase">iOS</span>
+                        </div>
+                    </div>
+                    <span class="text-[8px] font-bold text-zen-gray/60 uppercase tracking-tighter">App Store</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="size-12 bg-white border border-sand p-1.5 rounded-lg flex items-center justify-center shadow-sm">
+                        <div class="size-full bg-slate-50 flex items-center justify-center border border-dashed border-slate-200">
+                            <span class="text-[7px] text-slate-400 font-bold uppercase">Android</span>
+                        </div>
+                    </div>
+                    <span class="text-[8px] font-bold text-zen-gray/60 uppercase tracking-tighter">Google Play</span>
+                </div>
+            </div>
+
+            <!-- Spacer Derecha -->
+            <div class="hidden md:block"></div>
+        </footer>
+    </div> <!-- relative flex -->
+</div> <!-- main-scroll-container -->
+<div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+<div class="fixed bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-terracotta/20 to-transparent"></div>
+<div class="absolute -z-10 top-0 right-0 w-1/3 h-1/3 opacity-20 pointer-events-none">
+<div class="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent blur-3xl"></div>
+</div>
+<div class="absolute -z-10 bottom-0 left-0 w-1/4 h-1/4 opacity-10 pointer-events-none">
+<div class="w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-terracotta/30 via-transparent to-transparent blur-3xl"></div>
+</div>
+</div>
+
+<!-- ========================================== -->
+<!-- ==== SCREENSAVER / ATRACTOR (Hidden) ===== -->
+<!-- ========================================== -->
+<div id="screensaver" class="fixed inset-0 z-[40] bg-black hidden flex items-center justify-center pointer-events-auto">
+    <div id="screensaver-media" class="w-full h-full flex items-center justify-center transition-opacity duration-1000 hidden opacity-0">
+        <img id="screensaver-img" src="" class="w-full h-full object-cover" alt="Screensaver">
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ============ PIN MODAL (Hidden) ========== -->
+<!-- ========================================== -->
+<div id="pin-modal" class="hidden-transition">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center">
+        <div class="size-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-primary text-3xl">lock</span>
+        </div>
+        <h3 class="text-xl font-bold text-slate-800 mb-2">Acceso Restringido</h3>
+        <p class="text-slate-500 text-sm mb-6 text-center">Introduce el código PIN para acceder a la gestión de pantallas.</p>
+        
+        <!-- Indicador de PIN (Puntos) -->
+        <div id="pin-dots" class="flex gap-4 mb-8">
+            <div class="size-4 rounded-full border-2 border-slate-200 transition-all duration-300"></div>
+            <div class="size-4 rounded-full border-2 border-slate-200 transition-all duration-300"></div>
+            <div class="size-4 rounded-full border-2 border-slate-200 transition-all duration-300"></div>
+            <div class="size-4 rounded-full border-2 border-slate-200 transition-all duration-300"></div>
+        </div>
+        
+        <!-- Teclado Numérico Visual -->
+        <div class="grid grid-cols-3 gap-3 w-full mb-8">
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="1">1</button>
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="2">2</button>
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="3">3</button>
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="4">4</button>
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="5">5</button>
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="6">6</button>
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="7">7</button>
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="8">8</button>
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="9">9</button>
+            <button id="btn-pin-clear" class="h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-400 transition-colors active:scale-95 flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl">backspace</span>
+            </button>
+            <button class="pin-num-btn h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-2xl font-bold text-slate-700 transition-colors active:scale-95" data-val="0">0</button>
+            <button id="btn-pin-cancel-alt" class="h-16 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-400 transition-colors active:scale-95 flex items-center justify-center">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+        </div>
+        
+        <p id="pin-error" class="text-red-500 text-sm font-semibold mb-4 hidden">PIN Incorrecto</p>
+
+        <div class="flex gap-4 w-full">
+            <button id="btn-cancel-pin" class="flex-1 px-4 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ============ DNI MODAL (Hidden) ========== -->
+<!-- ========================================== -->
+<div id="dni-modal" class="hidden-transition">
+    <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-sm w-full mx-4 transform scale-95 transition-transform duration-300 flex flex-col items-center">
+        <div class="size-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-primary text-3xl">badge</span>
+        </div>
+        <h3 class="text-xl font-bold text-slate-800 mb-2">Consulta tus Citas</h3>
+        <p class="text-slate-500 text-sm mb-6 text-center">Introduce tu DNI/NIE para ver tus reservas y actividades en El Templo.</p>
+
+        <div class="w-full mb-6">
+            <input id="dni-input" type="text" placeholder="Ej: 12345678A" class="w-full h-14 text-center text-xl font-bold border-2 border-slate-200 rounded-lg focus:border-primary focus:ring-0 transition-colors uppercase" autocomplete="off" />
+        </div>
+        
+        <p id="dni-error" class="text-red-500 text-sm font-semibold mb-4 hidden">Por favor, introduce un DNI válido.</p>
+
+        <div class="flex gap-4 w-full">
+            <button id="btn-cancel-dni" class="flex-1 px-4 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors">Cancelar</button>
+            <button id="btn-submit-dni" class="flex-1 px-4 py-3 bg-primary text-white font-bold rounded-xl hover:brightness-105 transition-all active:scale-95 shadow-md">Consultar</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ======== ÚNETE PANEL (Informativo) ======= -->
+<!-- ========================================== -->
+<div id="citas-panel" class="content-panel-layer hidden-transition" tabindex="-1">
+    <div class="relative flex w-full flex-col p-4 md:p-8 lg:p-12">
+        <header class="panel-header">
+            <div class="flex items-center gap-4">
+                <button id="btn-volver-citas" class="p-2 -m-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h2 class="panel-title text-slate-800">Únete</h2>
+            </div>
+        </header>
+
+        <main class="flex-grow flex flex-col items-center justify-center max-w-6xl mx-auto w-full py-8 md:py-12">
+            <div id="qr-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full opacity-0 translate-y-4 transition-all duration-700">
+                <!-- Los 4 QRs se generarán dinámicamente o por defecto -->
+                <div class="qr-card bg-white border border-sand rounded-2xl p-6 flex flex-col items-center shadow-sm hover:shadow-xl transition-all group">
+                    <h3 class="qr-title text-sm font-bold text-slate-700 uppercase tracking-widest mb-6">Reserva Clases</h3>
+                    <div class="qr-image-container size-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center relative overflow-hidden">
+                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/clases" class="w-full h-full p-2" alt="QR">
+                    </div>
+                </div>
+                <div class="qr-card bg-white border border-sand rounded-2xl p-6 flex flex-col items-center shadow-sm hover:shadow-xl transition-all group">
+                    <h3 class="qr-title text-sm font-bold text-slate-700 uppercase tracking-widest mb-6">Inscripción Talleres</h3>
+                    <div class="qr-image-container size-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center relative overflow-hidden">
+                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/talleres" class="w-full h-full p-2" alt="QR">
+                    </div>
+                </div>
+                <div class="qr-card bg-white border border-sand rounded-2xl p-6 flex flex-col items-center shadow-sm hover:shadow-xl transition-all group">
+                    <h3 class="qr-title text-sm font-bold text-slate-700 uppercase tracking-widest mb-6">Síguenos Instagram</h3>
+                    <div class="qr-image-container size-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center relative overflow-hidden">
+                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://instagram.com" class="w-full h-full p-2" alt="QR">
+                    </div>
+                </div>
+                <div class="qr-card bg-white border border-sand rounded-2xl p-6 flex flex-col items-center shadow-sm hover:shadow-xl transition-all group">
+                    <h3 class="qr-title text-sm font-bold text-slate-700 uppercase tracking-widest mb-6">Web Oficial</h3>
+                    <div class="qr-image-container size-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center relative overflow-hidden">
+                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://google.com" class="w-full h-full p-2" alt="QR">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="citas-logic-container" class="hidden">
+                <p id="citas-welcome-text"></p>
+                <div id="citas-list-container"></div>
+                <div id="citas-empty-state"></div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ======== RITUALES PANEL (Hidden) ========= -->
+<!-- ========================================== -->
+<div id="rituales-panel" class="content-panel-layer hidden-transition" tabindex="-1">
+    <div class="relative flex w-full flex-col p-4 md:p-8 lg:p-12">
+        <header class="panel-header">
+            <div class="flex items-center gap-4">
+                <button id="btn-volver-rituales" class="p-2 -m-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h2 class="panel-title text-slate-800">Experiencias</h2>
+            </div>
+        </header>
+
+        <main class="flex-grow flex flex-col items-center max-w-6xl mx-auto w-full">
+                        
+            <div id="rituales-list-container" class="w-full flex flex-col gap-12 pb-16">
+                <!-- Secciones de categorías y tarjetas generadas vía JS -->
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ======== TALLERES PANEL (Hidden) ========= -->
+<!-- ========================================== -->
+<div id="talleres-panel" class="content-panel-layer hidden-transition" tabindex="-1">
+    <div class="relative flex w-full flex-col p-4 md:p-6 lg:p-8">
+        <header class="panel-header">
+            <div class="flex items-center gap-4">
+                <button id="btn-volver-talleres" class="p-2 -m-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h2 class="panel-title text-slate-800">Clases</h2>
+            </div>
+        </header>
+
+        <main class="flex-grow flex flex-col w-full max-w-6xl mx-auto pb-8">
+            <!-- Layout de dos columnas para Talleres -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-stretch">
+                
+                <!-- Columna Izquierda: Imagen y Selección (50%) -->
+                <div class="flex flex-col gap-6">
+                    <div class="relative w-full h-full bg-white border border-sand rounded-2xl overflow-hidden shadow-sm flex items-center justify-center">
+                        <img src="agenda/Marzo 26.jpeg" alt="Horario de Talleres" class="w-full h-full object-contain block">
+                        <!-- Capa de puntos interactivos -->
+                        <div id="talleres-hotspots-overlay" class="absolute inset-0"></div>
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Tarjeta de Detalle (50%) -->
+                <div class="flex flex-col">
+                    <div id="taller-detalle-container" class="bg-white border-2 border-primary/20 rounded-2xl p-6 md:p-8 h-full shadow-xl relative overflow-hidden flex flex-col items-center justify-center">
+                        <div id="taller-detalle-content" class="w-full flex flex-col items-center justify-center transition-opacity duration-300">
+                            <!-- Estado inicial: Invitación a seleccionar -->
+                            <div class="flex flex-col items-center text-center py-12">
+                                <div class="size-20 bg-primary/5 rounded-full flex items-center justify-center mb-6 animate-bounce">
+                                    <span class="material-symbols-outlined text-primary text-4xl">touch_app</span>
+                                </div>
+                                <h3 class="text-xl font-serif font-bold text-slate-800 mb-4 uppercase tracking-widest">Información de Actividad</h3>
+                            </div>
+                        </div>
+                        
+                        <!-- Fondo decorativo sutil -->
+                        <div class="absolute -bottom-10 -right-10 size-40 bg-sand/20 rounded-full blur-3xl -z-10"></div>
+                        <div class="absolute -top-10 -left-10 size-32 bg-primary/5 rounded-full blur-2xl -z-10"></div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- ========================================== -->
+<!-- ========= CLASES PANEL (Hidden) ========== -->
+<!-- ========================================== -->
+<div id="clases-panel" class="content-panel-layer hidden-transition" tabindex="-1">
+    <div class="relative flex w-full flex-col p-4 md:p-8 lg:p-12">
+        <header class="panel-header">
+            <div class="flex items-center gap-4">
+                <button id="btn-volver-clases" class="p-2 -m-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h2 class="panel-title text-slate-800">Talleres</h2>
+            </div>
+        </header>
+
+        <main class="flex-grow flex flex-col items-center max-w-6xl mx-auto w-full py-8">
+            <div id="talleres-items-list" class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-16">
+                <!-- Generado dinámicamente -->
+            </div>
+            
+            <div class="flex flex-col items-center justify-center py-8 text-center">
+                <button class="btn-inicio-global flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-full font-bold uppercase tracking-widest hover:brightness-105 transition-all active:scale-95 shadow-lg">
+                    <span class="material-symbols-outlined">home</span>
+                    <span>Volver a Inicio</span>
+                </button>
+            </div>
+        </main>
+    </div>
+</div>
+
+<div id="admin-panel" class="admin-panel-layer hidden-transition" tabindex="-1">
+    <div class="layout-container flex flex-col min-h-screen">
+        <!-- Header -->
+        <header class="panel-header flex-row justify-between flex-wrap gap-4">
+            <div class="flex items-center gap-4">
+                <button id="btn-logout-admin-sidebar" class="p-2 -m-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h2 class="panel-title text-slate-800">Panel de Gestión</h2>
+            </div>
+            
+            <div class="flex bg-slate-100 p-1 rounded-xl">
+                <button onclick="switchAdminTab('resumen')" id="tab-btn-resumen" class="admin-tab-btn active px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">dashboard</span>
+                    Inicio
+                </button>
+                <button onclick="switchAdminTab('talleres')" id="tab-btn-talleres" class="admin-tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-400 hover:text-slate-600 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">fitness_center</span>
+                    Clases
+                </button>
+                <button onclick="switchAdminTab('experiencias')" id="tab-btn-experiencias" class="admin-tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-400 hover:text-slate-600 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">spa</span>
+                    Experiencias
+                </button>
+                <button onclick="switchAdminTab('qrs')" id="tab-btn-qrs" class="admin-tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-400 hover:text-slate-600 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">qr_code_2</span>
+                    Únete (QRs)
+                </button>
+                <button onclick="switchAdminTab('talleres-items')" id="tab-btn-talleres-items" class="admin-tab-btn px-4 py-2 rounded-lg text-sm font-bold text-slate-400 hover:text-slate-600 transition-all flex items-center gap-2">
+                    <span class="material-symbols-outlined text-lg">category</span>
+                    Talleres (Catálogo)
+                </button>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button id="btn-toggle-fullscreen" class="flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-xl text-sm font-bold hover:bg-primary/20 transition-all">
+                    <span class="material-symbols-outlined text-lg">fullscreen</span>
+                    Modo Kiosk
+                </button>
+                <button id="btn-logout-admin" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-xl text-sm font-bold hover:bg-slate-300 transition-all">
+                    Cerrar Sesión
+                </button>
+                <button id="btn-exit-app" class="px-4 py-2 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-all shadow-md">
+                    Salir Aplicación
+                </button>
+            </div>
+        </header>
+        <!-- Main Content -->
+        <main class="flex-grow p-4 md:p-8 overflow-y-auto">
+            
+            <!-- VISTA INICIO / REMOTO (Consolidado) -->
+            <div id="admin-view-resumen" class="admin-view">
+                <div class="flex flex-col items-center justify-center gap-8 rounded-3xl border-2 border-primary/20 bg-white p-12 md:p-20 text-center shadow-xl max-w-5xl mx-auto">
+                    <div class="size-28 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
+                        <span class="material-symbols-outlined text-primary text-7xl">cloud_sync</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-4 max-w-2xl">
+                        <h3 class="text-3xl md:text-4xl font-bold text-slate-800">Panel de Control Remoto Activo</h3>
+                        <p class="text-slate-600 text-lg md:text-xl leading-relaxed">
+                            Bienvenido al centro de mando. Para gestionar el contenido dinámico de la tablet (fotos y vídeos del protector de pantalla), utiliza el enlace de Google Sheet a continuación.
+                        </p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-6">
+                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200 transition-all hover:shadow-md">
+                            <span class="material-symbols-outlined text-primary mb-4 text-3xl">add_photo_alternate</span>
+                            <h4 class="font-bold text-slate-800 mb-2">Imágenes</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed">Añade links en la pestaña "Multimedia" columna A.</p>
+                        </div>
+                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200 transition-all hover:shadow-md">
+                            <span class="material-symbols-outlined text-primary mb-4 text-3xl">video_library</span>
+                            <h4 class="font-bold text-slate-800 mb-2">Vídeos</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed">Soporta links directos de YouTube en la columna A.</p>
+                        </div>
+                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200 transition-all hover:shadow-md">
+                            <span class="material-symbols-outlined text-primary mb-4 text-3xl">sync</span>
+                            <h4 class="font-bold text-slate-800 mb-2">Auto-Sync</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed">Los cambios en el Sheet se reflejan solos en la tablet.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-6 mt-8 items-center justify-center">
+                        <a href="https://docs.google.com/spreadsheets/d/1ApJeSkf-ZCRUrNXDAHZqDXd7foPXlkiG30PDp6VyEJ0/edit#gid=940405146" target="_blank" class="px-10 py-5 bg-primary text-white rounded-2xl font-bold text-xl hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-xl hover:shadow-primary/20 scale-105 active:scale-100">
+                            <span class="material-symbols-outlined">table_view</span>
+                            Abrir Google Sheet
+                        </a>
+                        <button id="btn-sync-all" class="px-8 py-5 bg-slate-800 text-white rounded-2xl font-bold text-lg hover:bg-slate-900 transition-all flex items-center justify-center gap-3 shadow-lg active:scale-95">
+                            <span class="material-symbols-outlined" id="sync-icon">sync_lock</span>
+                            Sincronizar ahora
+                        </button>
+                    </div>
+                    <div id="sync-status-msg" class="mt-6 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                        Estado: <span id="last-sync-time" class="text-primary">Pendiente de sincronización</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA CLASES (HORARIO) -->
+            <div id="admin-view-talleres" class="admin-view hidden">
+                <!-- Editor Visual de Horarios (Estilo CAD) -->
+                <section class="w-full">
+                    <div class="rounded-2xl border-2 border-slate-200 bg-white shadow-xl overflow-hidden">
+                        <div class="bg-slate-800 p-6 text-white flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div class="flex items-center gap-3">
+                                <div class="size-10 bg-primary/20 rounded-lg flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-primary">edit_square</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold">Editor Visual de Hotspots</h3>
+                                    <p class="text-[10px] text-slate-400 uppercase tracking-widest">Estilo AutoCAD - Dibuja y arrastra</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 w-full md:w-auto">
+                                <button id="btn-draw-mode" class="flex-1 md:flex-none px-4 py-2 bg-slate-700 text-white rounded-lg font-bold text-xs hover:bg-slate-600 transition-all flex items-center justify-center gap-2 border-2 border-transparent active:scale-95">
+                                    <span class="material-symbols-outlined text-sm">per_focal_point</span>
+                                    Nuevo Punto
+                                </button>
+                                <button id="btn-save-talleres-config" class="flex-1 md:flex-none px-6 py-2 bg-primary text-white rounded-lg font-bold hover:brightness-105 transition-all shadow-lg flex items-center justify-center gap-2 active:scale-95">
+                                    <span class="material-symbols-outlined text-sm">save</span>
+                                    Guardar Todo
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-slate-100/50">
+                            <!-- Lienzo CAD (8/12) -->
+                            <div class="lg:col-span-8 flex flex-col gap-4">
+                                <div class="relative w-full bg-slate-200 rounded-xl overflow-hidden shadow-inner border-2 border-slate-300 group" id="admin-editor-viewport">
+                                    <!-- Imagen de fondo (Horario) -->
+                                    <img src="agenda/Marzo 26.jpeg" alt="Horario Editor" class="w-full h-auto object-contain select-none pointer-events-none" id="admin-editor-img">
+                                    
+                                    <!-- Capa de dibujo e interacción -->
+                                    <div id="admin-visual-overlay" class="absolute inset-0 cursor-crosshair">
+                                        <!-- Aquí se inyectarán los rectángulos visuales (hotspots) -->
+                                    </div>
+                                    
+                                    <!-- Rectángulo siendo dibujado (temporal) -->
+                                    <div id="drawing-rect" class="absolute border-2 border-primary bg-primary/20 hidden pointer-events-none"></div>
+                                    
+                                    <!-- Guías inteligentes (opcional) -->
+                                    <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white text-[10px] px-3 py-1.5 rounded-full font-bold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                        MODO: MULTI-EDICIÓN VIVA
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center justify-center gap-6 p-4 bg-white rounded-xl border border-slate-200 text-slate-400 select-none">
+                                    <div class="flex items-center gap-2"><span class="size-3 bg-primary rounded-sm shadow-sm"></span> <span class="text-[10px] uppercase font-bold">Seleccionado</span></div>
+                                    <div class="flex items-center gap-2"><span class="size-3 bg-slate-400 rounded-sm shadow-sm"></span> <span class="text-[10px] uppercase font-bold">Otro Punto</span></div>
+                                    <div class="flex items-center gap-2 text-[10px] font-bold uppercase"><span class="material-symbols-outlined text-sm">mouse</span> Arrastra para cambiar posición</div>
+                                </div>
+                            </div>
+
+                            <!-- Formulario de Propiedades (4/12) -->
+                            <div class="lg:col-span-4 flex flex-col gap-4">
+                                <div id="admin-taller-form" class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col h-full">
+                                    <div class="flex items-center gap-3 mb-6">
+                                        <div class="size-10 bg-slate-100 rounded-full flex items-center justify-center">
+                                            <span class="material-symbols-outlined text-slate-400">settings</span>
+                                        </div>
+                                        <h4 id="edit-taller-title-label" class="text-sm font-bold text-slate-800 uppercase tracking-tighter">Propiedades</h4>
+                                        <button id="btn-delete-hotspot" class="ml-auto text-red-400 hover:text-red-600 p-2 transition-colors hidden" title="Eliminar punto">
+                                            <span class="material-symbols-outlined">delete</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="flex flex-col gap-5 overflow-y-auto max-h-[500px] pr-2">
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase">Título de la Actividad</label>
+                                            <input type="text" id="edit-taller-titulo" placeholder="Ej: Yoga Hatha" class="w-full p-2.5 rounded-lg border border-slate-200 text-sm focus:border-primary outline-none transition-all">
+                                        </div>
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase">Horario / Fecha</label>
+                                            <input type="text" id="edit-taller-fecha" placeholder="Ej: Lunes 10:00" class="w-full p-2.5 rounded-lg border border-slate-200 text-sm focus:border-primary outline-none transition-all">
+                                        </div>
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase">Descripción breve</label>
+                                            <textarea id="edit-taller-desc" rows="3" placeholder="Describe la actividad..." class="w-full p-2.5 rounded-lg border border-slate-200 text-sm focus:border-primary outline-none transition-all resize-none"></textarea>
+                                        </div>
+                                        <div class="flex flex-col gap-1.5">
+                                            <label class="text-[10px] font-bold text-slate-400 uppercase">URL / Link del QR</label>
+                                            <input type="text" id="edit-taller-qr" placeholder="https://..." class="w-full p-2.5 rounded-lg border border-slate-200 text-sm focus:border-primary outline-none transition-all">
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3 mt-2 pt-4 border-t border-slate-100">
+                                            <div class="flex flex-col gap-1">
+                                                <label class="text-[9px] font-bold text-slate-400 uppercase">Top (%)</label>
+                                                <input type="number" id="edit-taller-top" step="0.1" class="p-2 bg-slate-50 rounded-lg border text-xs">
+                                            </div>
+                                            <div class="flex flex-col gap-1">
+                                                <label class="text-[9px] font-bold text-slate-400 uppercase">Left (%)</label>
+                                                <input type="number" id="edit-taller-left" step="0.1" class="p-2 bg-slate-50 rounded-lg border text-xs">
+                                            </div>
+                                            <div class="flex flex-col gap-1">
+                                                <label class="text-[9px] font-bold text-slate-400 uppercase">Ancho (%)</label>
+                                                <input type="number" id="edit-taller-width" step="0.1" class="p-2 bg-slate-50 rounded-lg border text-xs">
+                                            </div>
+                                            <div class="flex flex-col gap-1">
+                                                <label class="text-[9px] font-bold text-slate-400 uppercase">Alto (%)</label>
+                                                <input type="number" id="edit-taller-height" step="0.1" class="p-2 bg-slate-50 rounded-lg border text-xs">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p class="text-[9px] text-slate-400 mt-6 leading-tight italic">Los campos se actualizan solos al mover los cuadros en la imagen de la izquierda.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- VISTA EXPERIENCIAS (Nueva) -->
+            <div id="admin-view-experiencias" class="admin-view hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Listado de Experiencias -->
+                    <div class="lg:col-span-4 flex flex-col gap-4">
+                        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-[600px] flex flex-col">
+                            <h4 class="text-sm font-bold text-slate-800 uppercase mb-4">Catálogo Actual</h4>
+                            <div id="admin-ritual-list" class="flex-grow overflow-y-auto space-y-2 pr-2">
+                                <!-- Generado por JS -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Formulario de Edición -->
+                    <div class="lg:col-span-8">
+                        <div id="admin-ritual-form" class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                            <h4 class="text-lg font-bold text-slate-800 mb-8 border-b border-slate-100 pb-4">Editar Experiencia</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="space-y-6">
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Título</label>
+                                        <input type="text" id="edit-ritual-titulo" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Descripción</label>
+                                        <textarea id="edit-ritual-desc" rows="4" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all resize-none"></textarea>
+                                    </div>
+                                </div>
+                                <div class="space-y-6">
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Duración (ej: 60 min)</label>
+                                        <input type="text" id="edit-ritual-duracion" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Precio (ej: 75,00€)</label>
+                                        <input type="text" id="edit-ritual-precio" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Imagen de la Experiencia</label>
+                                        <div class="relative group">
+                                            <input type="text" id="edit-ritual-imagen" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all pl-12" placeholder="Pega el link de la foto aquí...">
+                                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary">link</span>
+                                        </div>
+                                        <div class="mt-4 p-2 bg-slate-50 border border-sand rounded-2xl overflow-hidden aspect-video relative group">
+                                            <img id="edit-ritual-preview" src="" class="w-full h-full object-cover rounded-xl opacity-0 transition-opacity duration-300" alt="Vista previa">
+                                            <div id="preview-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-300 gap-2">
+                                                <span class="material-symbols-outlined text-4xl">image</span>
+                                                <span class="text-[10px] uppercase font-bold tracking-widest">Sin imagen cargada</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-8 pt-8 border-t border-slate-100 flex justify-end">
+                                <button id="btn-save-ritual" class="px-10 py-4 bg-primary text-white rounded-2xl font-bold uppercase tracking-widest hover:brightness-105 transition-all shadow-lg active:scale-95">
+                                    Guardar Cambios
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- VISTA QRs (Nueva) -->
+            <div id="admin-view-qrs" class="admin-view hidden">
+                <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                    <h4 class="text-lg font-bold text-slate-800 mb-8 border-b border-slate-100 pb-4">Configuración de QRs (Sección Únete)</h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <!-- QR 1 -->
+                        <div class="flex flex-col gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="text-[10px] font-black text-primary uppercase tracking-widest">Espacio 1</span>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Título</label>
+                                <input type="text" id="qr-title-1" class="p-2 text-xs rounded-lg border border-slate-200" value="Reserva Clases">
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Link / Datos QR</label>
+                                <input type="text" id="qr-data-1" class="p-2 text-xs rounded-lg border border-slate-200" value="https://example.com/clases">
+                            </div>
+                        </div>
+                        
+                        <!-- QR 2 -->
+                        <div class="flex flex-col gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="text-[10px] font-black text-primary uppercase tracking-widest">Espacio 2</span>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Título</label>
+                                <input type="text" id="qr-title-2" class="p-2 text-xs rounded-lg border border-slate-200" value="Inscripción Talleres">
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Link / Datos QR</label>
+                                <input type="text" id="qr-data-2" class="p-2 text-xs rounded-lg border border-slate-200" value="https://example.com/talleres">
+                            </div>
+                        </div>
+
+                        <!-- QR 3 -->
+                        <div class="flex flex-col gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="text-[10px] font-black text-primary uppercase tracking-widest">Espacio 3</span>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Título</label>
+                                <input type="text" id="qr-title-3" class="p-2 text-xs rounded-lg border border-slate-200" value="Síguenos Instagram">
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Link / Datos QR</label>
+                                <input type="text" id="qr-data-3" class="p-2 text-xs rounded-lg border border-slate-200" value="https://instagram.com">
+                            </div>
+                        </div>
+
+                        <!-- QR 4 -->
+                        <div class="flex flex-col gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="text-[10px] font-black text-primary uppercase tracking-widest">Espacio 4</span>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Título</label>
+                                <input type="text" id="qr-title-4" class="p-2 text-xs rounded-lg border border-slate-200" value="Web Oficial">
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Link / Datos QR</label>
+                                <input type="text" id="qr-data-4" class="p-2 text-xs rounded-lg border border-slate-200" value="https://google.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 pt-8 border-t border-slate-100 flex justify-end">
+                        <button id="btn-save-qrs" class="px-10 py-4 bg-primary text-white rounded-2xl font-bold uppercase tracking-widest hover:brightness-105 transition-all shadow-lg active:scale-95">
+                            Guardar Configuración QR
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISTA TALLERES (CATÁLOGO) (Nueva) -->
+            <div id="admin-view-talleres-items" class="admin-view hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Listado de Items de Talleres -->
+                    <div class="lg:col-span-4 flex flex-col gap-4">
+                        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-[600px] flex flex-col">
+                            <h4 class="text-sm font-bold text-slate-800 uppercase mb-4">Catálogo de Talleres</h4>
+                            <div id="admin-talleres-item-list" class="flex-grow overflow-y-auto space-y-2 pr-2">
+                                <!-- Generado por JS -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Formulario de Edición -->
+                    <div class="lg:col-span-8">
+                        <div id="admin-talleres-item-form" class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
+                            <h4 class="text-lg font-bold text-slate-800 mb-8 border-b border-slate-100 pb-4">Editar Detalle del Taller</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div class="space-y-6">
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Título del Taller</label>
+                                        <input type="text" id="edit-taller-item-titulo" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Descripción Breve</label>
+                                        <textarea id="edit-taller-item-desc" rows="4" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all resize-none"></textarea>
+                                    </div>
+                                </div>
+                                <div class="space-y-6">
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Precio / Información</label>
+                                        <input type="text" id="edit-taller-item-precio" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Imagen del Taller</label>
+                                        <div class="relative group">
+                                            <input type="text" id="edit-taller-item-imagen" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all pl-12" placeholder="URL de la imagen...">
+                                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary">link</span>
+                                        </div>
+                                        <div class="mt-4 p-2 bg-slate-50 border border-sand rounded-xl overflow-hidden aspect-video relative">
+                                            <img id="edit-taller-item-preview" src="" class="w-full h-full object-cover rounded-lg opacity-0 transition-opacity duration-300" alt="Vista previa">
+                                            <div id="taller-preview-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-300 gap-1">
+                                                <span class="material-symbols-outlined text-3xl">image</span>
+                                                <span class="text-[9px] uppercase font-bold tracking-tighter">Sin imagen</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-8 pt-8 border-t border-slate-100 flex justify-end">
+                                <button id="btn-save-taller-item" class="px-10 py-4 bg-primary text-white rounded-2xl font-bold uppercase tracking-widest hover:brightness-105 transition-all shadow-lg active:scale-95">
+                                    Guardar Taller
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <section class="hidden">
+                <!-- Se ha movido a la pestaña de Inicio -->
+            </section>
+        </main>
+        
+        <footer class="mt-auto px-4 md:px-8 py-4 border-t border-slate-200 text-slate-400 text-[10px] md:text-xs flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
+            <p>© 2024 Admin Panel - Sistema de Gestión Multimedia</p>
+            <div class="flex gap-4">
+                <a class="hover:text-primary" href="#">Manual de Usuario</a>
+                <a class="hover:text-primary" href="#">Soporte Técnico</a>
+            </div>
+        </footer>
+    </div>
+</div>
+<script src="app.js?v=1.1"></script>
+</body></html>

@@ -1,0 +1,8 @@
+.gemini/
+.agent/
+.agents/
+node_modules/
+.vercel/
+*.log
+iniciar_servidor.bat
+test_parser.js

@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="El Templo">
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Belleza&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 <script id="tailwind-config">
@@ -17,16 +17,15 @@
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#e8ab30",
-                        "terracotta": "#c68667",
-                        "background-light": "#fcfaf8",
-                        "background-dark": "#211c11",
-                        "sand": "#f3efe7",
-                        "zen-gray": "#977f4e",
+                        "primary": "#BFB1A3",
+                        "secondary": "#423218",
+                        "accent": "#D4AF37",
+                        "sand": "#F5F1EE",
+                        "zen-gray": "#5C4538",
                     },
                     fontFamily: {
-                        "display": ["Manrope", "sans-serif"],
-                        "serif": ["Playfair Display", "serif"],
+                        "display": ["Poppins", "sans-serif"],
+                        "serif": ["Belleza", "serif"],
                     },
                     borderRadius: {
                         "DEFAULT": "0.5rem",
@@ -40,11 +39,13 @@
     </script>
 <style>
         body {
-            font-family: 'Manrope', sans-serif;
-            background-image: radial-gradient(circle at 50% 50%, rgba(232, 171, 48, 0.03) 0%, transparent 100%);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-sand, #F5F1EE);
+            background-image: radial-gradient(circle at 50% 50%, rgba(191, 177, 163, 0.05) 0%, transparent 100%);
+            color: #423218;
         }
         .serif-text {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Belleza', serif;
         }
 
         /* Acordeón de Rituales */
@@ -207,14 +208,8 @@
 <body class="bg-background-light text-slate-900 selection:bg-primary/30 h-screen overflow-hidden">
 <div class="main-scroll-container">
     <div class="relative flex flex-col p-4 md:p-8 lg:p-12 min-h-screen">
-        <header class="flex items-center justify-between mb-10">
-            <div class="flex items-center gap-3 text-primary">
-                <div class="size-10">
-                    <svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M24 0.757355L47.2426 24L24 47.2426L0.757355 24L24 0.757355ZM21 35.7574V12.2426L9.24264 24L21 35.7574Z" fill="currentColor" fill-rule="evenodd"></path></svg>
-                </div>
-                <h1 class="text-2xl md:text-3xl font-bold tracking-[0.1em] uppercase text-slate-800">El Templo</h1>
-            </div>
-            <div class="w-20 hidden md:block"></div> <!-- Spacer to offset logo if needed -->
+        <header class="flex items-center justify-center mb-6 py-2">
+            <img src="https://eltemplobyzenestetic.es/wp-content/uploads/2022/10/LOGOTIPO-EL-TEMPLO-2-1536x867.png" alt="El Templo Logo" class="h-20 md:h-28 w-auto object-contain drop-shadow-sm">
         </header>
         <main class="flex flex-col gap-6">
             <!-- Banner de Ofertas y Eventos Centrado -->
@@ -249,12 +244,12 @@
                 </div>
                 <span class="text-xl font-light tracking-wide text-slate-800 uppercase text-center px-4">Experiencias</span>
             </button>
-            <button id="btn-citas" class="btn-main-grid group flex flex-col items-center justify-center aspect-[4/3] bg-white border border-sand hover:border-primary/50 rounded-xl transition-all duration-500 shadow-sm hover:shadow-lg active:scale-[0.98]">
+            <button id="btn-citas" class="btn-main-grid group flex flex-col items-center justify-center aspect-[4/3] bg-white border border-sand hover:border-accent/50 rounded-xl transition-all duration-500 shadow-sm hover:shadow-lg active:scale-[0.98]">
                 <div class="size-20 mb-4 flex items-center justify-center rounded-full bg-sand group-hover:bg-primary/10 transition-colors">
-                    <span class="material-symbols-outlined text-4xl text-zen-gray group-hover:text-primary transition-colors">calendar_today</span>
+                    <span class="material-symbols-outlined text-4xl text-zen-gray group-hover:text-secondary transition-colors">favorite</span>
                 </div>
                 <span class="text-xl font-light tracking-wide text-slate-800 uppercase">Únete</span>
-                <span class="text-xs font-medium text-zen-gray/70 mt-1 uppercase tracking-widest leading-none">Citas de Hoy</span>
+                <span class="text-[10px] font-bold text-accent mt-1 uppercase tracking-[0.2em] leading-none">Tu Templo en el móvil</span>
             </button>
         </div>
 
@@ -272,17 +267,13 @@
             <div class="flex justify-center gap-8">
                 <div class="flex items-center gap-2">
                     <div class="size-12 bg-white border border-sand p-1.5 rounded-lg flex items-center justify-center shadow-sm">
-                        <div class="size-full bg-slate-50 flex items-center justify-center border border-dashed border-slate-200">
-                            <span class="text-[7px] text-slate-400 font-bold uppercase">iOS</span>
-                        </div>
+                        <img id="home-qr-ios-img" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://apps.apple.com/es/app/id6444007889" class="size-full object-contain" alt="QR iOS">
                     </div>
                     <span class="text-[8px] font-bold text-zen-gray/60 uppercase tracking-tighter">App Store</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <div class="size-12 bg-white border border-sand p-1.5 rounded-lg flex items-center justify-center shadow-sm">
-                        <div class="size-full bg-slate-50 flex items-center justify-center border border-dashed border-slate-200">
-                            <span class="text-[7px] text-slate-400 font-bold uppercase">Android</span>
-                        </div>
+                        <img id="home-qr-android-img" src="https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=https://play.google.com/store/apps/details?id=es.iconecta.zenestetic" class="size-full object-contain" alt="QR Android">
                     </div>
                     <span class="text-[8px] font-bold text-zen-gray/60 uppercase tracking-tighter">Google Play</span>
                 </div>
@@ -387,43 +378,22 @@
 <!-- ======== ÚNETE PANEL (Informativo) ======= -->
 <!-- ========================================== -->
 <div id="citas-panel" class="content-panel-layer hidden-transition" tabindex="-1">
-    <div class="relative flex w-full flex-col p-4 md:p-8 lg:p-12">
-        <header class="panel-header">
+    <div class="relative flex w-full flex-col p-4 md:p-6 lg:p-8">
+        <header class="panel-header mb-4">
             <div class="flex items-center gap-4">
                 <button id="btn-volver-citas" class="p-2 -m-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
-                    <span class="material-symbols-outlined">arrow_back</span>
+                    <span class="material-symbols-outlined text-3xl">arrow_back</span>
                 </button>
                 <h2 class="panel-title text-slate-800">Únete</h2>
             </div>
         </header>
 
-        <main class="flex-grow flex flex-col items-center justify-center max-w-6xl mx-auto w-full py-8 md:py-12">
-            <div id="qr-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full opacity-0 translate-y-4 transition-all duration-700">
-                <!-- Los 4 QRs se generarán dinámicamente o por defecto -->
-                <div class="qr-card bg-white border border-sand rounded-2xl p-6 flex flex-col items-center shadow-sm hover:shadow-xl transition-all group">
-                    <h3 class="qr-title text-sm font-bold text-slate-700 uppercase tracking-widest mb-6">Reserva Clases</h3>
-                    <div class="qr-image-container size-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center relative overflow-hidden">
-                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/clases" class="w-full h-full p-2" alt="QR">
-                    </div>
-                </div>
-                <div class="qr-card bg-white border border-sand rounded-2xl p-6 flex flex-col items-center shadow-sm hover:shadow-xl transition-all group">
-                    <h3 class="qr-title text-sm font-bold text-slate-700 uppercase tracking-widest mb-6">Inscripción Talleres</h3>
-                    <div class="qr-image-container size-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center relative overflow-hidden">
-                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/talleres" class="w-full h-full p-2" alt="QR">
-                    </div>
-                </div>
-                <div class="qr-card bg-white border border-sand rounded-2xl p-6 flex flex-col items-center shadow-sm hover:shadow-xl transition-all group">
-                    <h3 class="qr-title text-sm font-bold text-slate-700 uppercase tracking-widest mb-6">Síguenos Instagram</h3>
-                    <div class="qr-image-container size-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center relative overflow-hidden">
-                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://instagram.com" class="w-full h-full p-2" alt="QR">
-                    </div>
-                </div>
-                <div class="qr-card bg-white border border-sand rounded-2xl p-6 flex flex-col items-center shadow-sm hover:shadow-xl transition-all group">
-                    <h3 class="qr-title text-sm font-bold text-slate-700 uppercase tracking-widest mb-6">Web Oficial</h3>
-                    <div class="qr-image-container size-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center relative overflow-hidden">
-                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://google.com" class="w-full h-full p-2" alt="QR">
-                    </div>
-                </div>
+            <div class="mb-6 text-center max-w-3xl mx-auto">
+                <h2 class="text-2xl md:text-4xl font-serif font-black text-secondary leading-tight mb-2 uppercase tracking-tighter">Únete a la Experiencia</h2>
+                <p class="text-zen-gray italic serif-text text-base leading-relaxed">"Ayurveda, la sabiduría de la vida, nos regala la posibilidad de alcanzar tu equilibrio y belleza verdadera."</p>
+            </div>
+            <div id="qr-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 w-full opacity-0 translate-y-4 transition-all duration-700 max-w-7xl mx-auto px-4">
+                <!-- Dynamic QRs from app.js will be rendered here -->
             </div>
             
             <div id="citas-logic-container" class="hidden">
@@ -478,10 +448,12 @@
                 
                 <!-- Columna Izquierda: Imagen y Selección (50%) -->
                 <div class="flex flex-col gap-6">
-                    <div class="relative w-full h-full bg-white border border-sand rounded-2xl overflow-hidden shadow-sm flex items-center justify-center">
-                        <img src="agenda/Marzo 26.jpeg" alt="Horario de Talleres" class="w-full h-full object-contain block">
-                        <!-- Capa de puntos interactivos -->
-                        <div id="talleres-hotspots-overlay" class="absolute inset-0"></div>
+                    <div class="w-full h-full bg-white border border-sand rounded-2xl overflow-hidden shadow-sm flex items-center justify-center">
+                        <div class="relative inline-block max-w-full max-h-full">
+                            <img src="agenda/Marzo 26.jpeg" alt="Horario de Talleres" class="max-w-full max-h-[80vh] w-auto h-auto block">
+                            <!-- Capa de puntos interactivos -->
+                            <div id="talleres-hotspots-overlay" class="absolute inset-0"></div>
+                        </div>
                     </div>
                 </div>
 
@@ -527,13 +499,7 @@
             <div id="talleres-items-list" class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 pb-16">
                 <!-- Generado dinámicamente -->
             </div>
-            
-            <div class="flex flex-col items-center justify-center py-8 text-center">
-                <button class="btn-inicio-global flex items-center gap-2 px-8 py-4 bg-primary text-white rounded-full font-bold uppercase tracking-widest hover:brightness-105 transition-all active:scale-95 shadow-lg">
-                    <span class="material-symbols-outlined">home</span>
-                    <span>Volver a Inicio</span>
-                </button>
-            </div>
+
         </main>
     </div>
 </div>
@@ -588,49 +554,71 @@
         <!-- Main Content -->
         <main class="flex-grow p-4 md:p-8 overflow-y-auto">
             
-            <!-- VISTA INICIO / REMOTO (Consolidado) -->
+            <!-- VISTA INICIO / REMOTO (Compacto) -->
             <div id="admin-view-resumen" class="admin-view">
-                <div class="flex flex-col items-center justify-center gap-8 rounded-3xl border-2 border-primary/20 bg-white p-12 md:p-20 text-center shadow-xl max-w-5xl mx-auto">
-                    <div class="size-28 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
-                        <span class="material-symbols-outlined text-primary text-7xl">cloud_sync</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-4 max-w-2xl">
-                        <h3 class="text-3xl md:text-4xl font-bold text-slate-800">Panel de Control Remoto Activo</h3>
-                        <p class="text-slate-600 text-lg md:text-xl leading-relaxed">
-                            Bienvenido al centro de mando. Para gestionar el contenido dinámico de la tablet (fotos y vídeos del protector de pantalla), utiliza el enlace de Google Sheet a continuación.
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    <!-- Columna Sincronización -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm flex flex-col gap-6">
+                        <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                            <div class="size-10 bg-primary/10 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary">cloud_sync</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 uppercase tracking-tight">Sincronización Remota</h3>
+                        </div>
+                        
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Gestiona el contenido dinámico (Banners y Fondos) desde tu Google Sheet oficial.
                         </p>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full mt-6">
-                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200 transition-all hover:shadow-md">
-                            <span class="material-symbols-outlined text-primary mb-4 text-3xl">add_photo_alternate</span>
-                            <h4 class="font-bold text-slate-800 mb-2">Imágenes</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed">Añade links en la pestaña "Multimedia" columna A.</p>
+
+                        <div class="flex flex-col gap-4 mt-2">
+                            <a href="https://docs.google.com/spreadsheets/d/1ApJeSkf-ZCRUrNXDAHZqDXd7foPXlkiG30PDp6VyEJ0/edit#gid=0" target="_blank" class="w-full px-6 py-3.5 bg-slate-50 border border-slate-200 text-slate-700 rounded-xl font-bold text-sm hover:bg-slate-100 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-lg">open_in_new</span>
+                                Abrir Google Sheet
+                            </a>
+                            <button id="btn-sync-all" class="w-full px-6 py-3.5 bg-primary text-white rounded-xl font-bold text-sm hover:brightness-105 transition-all flex items-center justify-center gap-2 shadow-md">
+                                <span class="material-symbols-outlined text-lg" id="sync-icon">sync</span>
+                                Sincronizar Ahora
+                            </button>
                         </div>
-                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200 transition-all hover:shadow-md">
-                            <span class="material-symbols-outlined text-primary mb-4 text-3xl">video_library</span>
-                            <h4 class="font-bold text-slate-800 mb-2">Vídeos</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed">Soporta links directos de YouTube en la columna A.</p>
-                        </div>
-                        <div class="p-8 bg-slate-50 rounded-2xl border border-slate-200 transition-all hover:shadow-md">
-                            <span class="material-symbols-outlined text-primary mb-4 text-3xl">sync</span>
-                            <h4 class="font-bold text-slate-800 mb-2">Auto-Sync</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed">Los cambios en el Sheet se reflejan solos en la tablet.</p>
+                        
+                        <div id="sync-status-indicator" class="mt-4 px-4 py-2 bg-green-50 text-green-700 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2">
+                            <span class="size-2 bg-green-500 rounded-full animate-pulse"></span>
+                            Sistema Conectado y al día
                         </div>
                     </div>
 
-                    <div class="flex flex-col sm:flex-row gap-6 mt-8 items-center justify-center">
-                        <a href="https://docs.google.com/spreadsheets/d/1ApJeSkf-ZCRUrNXDAHZqDXd7foPXlkiG30PDp6VyEJ0/edit#gid=940405146" target="_blank" class="px-10 py-5 bg-primary text-white rounded-2xl font-bold text-xl hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-xl hover:shadow-primary/20 scale-105 active:scale-100">
-                            <span class="material-symbols-outlined">table_view</span>
-                            Abrir Google Sheet
-                        </a>
-                        <button id="btn-sync-all" class="px-8 py-5 bg-slate-800 text-white rounded-2xl font-bold text-lg hover:bg-slate-900 transition-all flex items-center justify-center gap-3 shadow-lg active:scale-95">
-                            <span class="material-symbols-outlined" id="sync-icon">sync_lock</span>
-                            Sincronizar ahora
-                        </button>
-                    </div>
-                    <div id="sync-status-msg" class="mt-6 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
-                        Estado: <span id="last-sync-time" class="text-primary">Pendiente de sincronización</span>
+                    <!-- Columna QRs Pantalla Principal -->
+                    <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm flex flex-col gap-6">
+                        <div class="flex items-center gap-3 border-b border-slate-100 pb-4">
+                            <div class="size-10 bg-accent/10 rounded-full flex items-center justify-center">
+                                <span class="material-symbols-outlined text-accent">qr_code_scanner</span>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800 uppercase tracking-tight">QRs Pantalla Principal</h3>
+                        </div>
+
+                        <p class="text-sm text-slate-600 leading-relaxed">
+                            Configura los enlaces de descarga para el footer de la tablet.
+                        </p>
+
+                        <div class="flex flex-col gap-5 mt-2">
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">App Store (iOS) URL</label>
+                                <div class="relative">
+                                    <input type="text" id="edit-home-qr-ios" placeholder="https://apps.apple.com/..." class="w-full p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-xs outline-none focus:border-primary transition-all pr-10">
+                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 text-sm">link</span>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-1.5">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Google Play (Android) URL</label>
+                                <div class="relative">
+                                    <input type="text" id="edit-home-qr-android" placeholder="https://play.google.com/..." class="w-full p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-xs outline-none focus:border-primary transition-all pr-10">
+                                    <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 text-sm">link</span>
+                                </div>
+                            </div>
+                            <button id="btn-save-home-qrs" class="mt-2 w-full px-6 py-3 bg-slate-800 text-white rounded-xl font-bold text-xs uppercase tracking-widest hover:bg-slate-900 transition-all shadow-md active:scale-95">
+                                Guardar QRs de Inicio
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -665,20 +653,23 @@
                         <div class="p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 bg-slate-100/50">
                             <!-- Lienzo CAD (8/12) -->
                             <div class="lg:col-span-8 flex flex-col gap-4">
-                                <div class="relative w-full bg-slate-200 rounded-xl overflow-hidden shadow-inner border-2 border-slate-300 group" id="admin-editor-viewport">
-                                    <!-- Imagen de fondo (Horario) -->
-                                    <img src="agenda/Marzo 26.jpeg" alt="Horario Editor" class="w-full h-auto object-contain select-none pointer-events-none" id="admin-editor-img">
+                                <div class="relative w-full bg-slate-200 rounded-xl overflow-hidden shadow-inner border-2 border-slate-300 group flex items-center justify-center bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0iI2ZmZiIvPgo8Y2lyY2xlIGN4PSIyIiBjeT0iMiIgcj0iMiIgZmlsbD0iI2RjZWNlOCIvPgo8L3N2Zz4=')]">
                                     
-                                    <!-- Capa de dibujo e interacción -->
-                                    <div id="admin-visual-overlay" class="absolute inset-0 cursor-crosshair">
-                                        <!-- Aquí se inyectarán los rectángulos visuales (hotspots) -->
+                                    <div class="relative inline-block max-w-full max-h-full" id="admin-editor-viewport">
+                                        <!-- Imagen de fondo (Horario) -->
+                                        <img src="agenda/Marzo 26.jpeg" alt="Horario Editor" class="max-w-full max-h-[70vh] w-auto h-auto block select-none pointer-events-none" id="admin-editor-img">
+                                        
+                                        <!-- Capa de dibujo e interacción -->
+                                        <div id="admin-visual-overlay" class="absolute inset-0 cursor-crosshair">
+                                            <!-- Aquí se inyectarán los rectángulos visuales (hotspots) -->
+                                        </div>
+                                        
+                                        <!-- Rectángulo siendo dibujado (temporal) -->
+                                        <div id="drawing-rect" class="absolute border-2 border-primary bg-primary/20 hidden pointer-events-none"></div>
                                     </div>
                                     
-                                    <!-- Rectángulo siendo dibujado (temporal) -->
-                                    <div id="drawing-rect" class="absolute border-2 border-primary bg-primary/20 hidden pointer-events-none"></div>
-                                    
                                     <!-- Guías inteligentes (opcional) -->
-                                    <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white text-[10px] px-3 py-1.5 rounded-full font-bold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                                    <div class="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-white text-[10px] px-3 py-1.5 rounded-full font-bold opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
                                         MODO: MULTI-EDICIÓN VIVA
                                     </div>
                                 </div>
@@ -754,7 +745,12 @@
                     <!-- Listado de Experiencias -->
                     <div class="lg:col-span-4 flex flex-col gap-4">
                         <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-[600px] flex flex-col">
-                            <h4 class="text-sm font-bold text-slate-800 uppercase mb-4">Catálogo Actual</h4>
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-sm font-bold text-slate-800 uppercase">Catálogo Actual</h4>
+                                <button id="btn-new-ritual" class="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">add</span> Nuevo
+                                </button>
+                            </div>
                             <div id="admin-ritual-list" class="flex-grow overflow-y-auto space-y-2 pr-2">
                                 <!-- Generado por JS -->
                             </div>
@@ -764,7 +760,12 @@
                     <!-- Formulario de Edición -->
                     <div class="lg:col-span-8">
                         <div id="admin-ritual-form" class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
-                            <h4 class="text-lg font-bold text-slate-800 mb-8 border-b border-slate-100 pb-4">Editar Experiencia</h4>
+                            <div class="flex items-center justify-between mb-8 border-b border-slate-100 pb-4">
+                                <h4 class="text-lg font-bold text-slate-800">Editar Experiencia</h4>
+                                <button id="btn-save-ritual" class="px-6 py-2 bg-primary text-white rounded-lg font-bold text-sm hover:brightness-105 transition-all shadow-md flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">save</span> Guardar Experiencia
+                                </button>
+                            </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div class="space-y-6">
                                     <div class="flex flex-col gap-2">
@@ -777,6 +778,10 @@
                                     </div>
                                 </div>
                                 <div class="space-y-6">
+                                    <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Fecha / Horario</label>
+                                        <input type="text" id="edit-ritual-fecha" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all" placeholder="Ej: Sab 10:00 - 12:00">
+                                    </div>
                                     <div class="flex flex-col gap-2">
                                         <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Duración (ej: 60 min)</label>
                                         <input type="text" id="edit-ritual-duracion" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all">
@@ -801,7 +806,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-8 pt-8 border-t border-slate-100 flex justify-end">
+                            <div class="mt-8 pt-8 border-t border-slate-100 flex justify-end gap-3">
+                                <button id="btn-delete-ritual" class="px-6 py-4 bg-red-50 text-red-600 border border-red-100 rounded-2xl font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all active:scale-95 hidden">
+                                    Eliminar
+                                </button>
                                 <button id="btn-save-ritual" class="px-10 py-4 bg-primary text-white rounded-2xl font-bold uppercase tracking-widest hover:brightness-105 transition-all shadow-lg active:scale-95">
                                     Guardar Cambios
                                 </button>
@@ -816,17 +824,17 @@
                 <div class="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
                     <h4 class="text-lg font-bold text-slate-800 mb-8 border-b border-slate-100 pb-4">Configuración de QRs (Sección Únete)</h4>
                     
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         <!-- QR 1 -->
                         <div class="flex flex-col gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
                             <span class="text-[10px] font-black text-primary uppercase tracking-widest">Espacio 1</span>
                             <div class="flex flex-col gap-2">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase">Título</label>
-                                <input type="text" id="qr-title-1" class="p-2 text-xs rounded-lg border border-slate-200" value="Reserva Clases">
+                                <input type="text" id="qr-title-1" class="p-2 text-xs rounded-lg border border-slate-200" value="App Store (iOS)">
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase">Link / Datos QR</label>
-                                <input type="text" id="qr-data-1" class="p-2 text-xs rounded-lg border border-slate-200" value="https://example.com/clases">
+                                <input type="text" id="qr-data-1" class="p-2 text-xs rounded-lg border border-slate-200" value="https://apps.apple.com/es/app/el-templo-by-zen-est%C3%A9tic/id6444007889">
                             </div>
                         </div>
                         
@@ -835,11 +843,11 @@
                             <span class="text-[10px] font-black text-primary uppercase tracking-widest">Espacio 2</span>
                             <div class="flex flex-col gap-2">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase">Título</label>
-                                <input type="text" id="qr-title-2" class="p-2 text-xs rounded-lg border border-slate-200" value="Inscripción Talleres">
+                                <input type="text" id="qr-title-2" class="p-2 text-xs rounded-lg border border-slate-200" value="Google Play">
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase">Link / Datos QR</label>
-                                <input type="text" id="qr-data-2" class="p-2 text-xs rounded-lg border border-slate-200" value="https://example.com/talleres">
+                                <input type="text" id="qr-data-2" class="p-2 text-xs rounded-lg border border-slate-200" value="https://play.google.com/store/apps/details?id=es.iconecta.zenestetic">
                             </div>
                         </div>
 
@@ -848,11 +856,11 @@
                             <span class="text-[10px] font-black text-primary uppercase tracking-widest">Espacio 3</span>
                             <div class="flex flex-col gap-2">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase">Título</label>
-                                <input type="text" id="qr-title-3" class="p-2 text-xs rounded-lg border border-slate-200" value="Síguenos Instagram">
+                                <input type="text" id="qr-title-3" class="p-2 text-xs rounded-lg border border-slate-200" value="Facebook">
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase">Link / Datos QR</label>
-                                <input type="text" id="qr-data-3" class="p-2 text-xs rounded-lg border border-slate-200" value="https://instagram.com">
+                                <input type="text" id="qr-data-3" class="p-2 text-xs rounded-lg border border-slate-200" value="https://facebook.com/...">
                             </div>
                         </div>
 
@@ -865,7 +873,20 @@
                             </div>
                             <div class="flex flex-col gap-2">
                                 <label class="text-[10px] font-bold text-slate-400 uppercase">Link / Datos QR</label>
-                                <input type="text" id="qr-data-4" class="p-2 text-xs rounded-lg border border-slate-200" value="https://google.com">
+                                <input type="text" id="qr-data-4" class="p-2 text-xs rounded-lg border border-slate-200" value="https://eltemplobyzenestetic.es">
+                            </div>
+                        </div>
+
+                        <!-- QR 5 -->
+                        <div class="flex flex-col gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                            <span class="text-[10px] font-black text-primary uppercase tracking-widest">Espacio 5</span>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Título</label>
+                                <input type="text" id="qr-title-5" class="p-2 text-xs rounded-lg border border-slate-200" value="Instagram">
+                            </div>
+                            <div class="flex flex-col gap-2">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Link / Datos QR</label>
+                                <input type="text" id="qr-data-5" class="p-2 text-xs rounded-lg border border-slate-200" value="https://instagram.com/...">
                             </div>
                         </div>
                     </div>
@@ -884,7 +905,12 @@
                     <!-- Listado de Items de Talleres -->
                     <div class="lg:col-span-4 flex flex-col gap-4">
                         <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm h-[600px] flex flex-col">
-                            <h4 class="text-sm font-bold text-slate-800 uppercase mb-4">Catálogo de Talleres</h4>
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-sm font-bold text-slate-800 uppercase">Catálogo Actual</h4>
+                                <button id="btn-new-taller-item" class="px-3 py-1.5 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-lg text-xs font-bold transition-colors flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">add</span> Nuevo
+                                </button>
+                            </div>
                             <div id="admin-talleres-item-list" class="flex-grow overflow-y-auto space-y-2 pr-2">
                                 <!-- Generado por JS -->
                             </div>
@@ -912,6 +938,10 @@
                                         <input type="text" id="edit-taller-item-precio" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all">
                                     </div>
                                     <div class="flex flex-col gap-2">
+                                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Fecha / Horario</label>
+                                        <input type="text" id="edit-taller-item-fecha" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all" placeholder="Ej: Sab 10:00 - 12:00">
+                                    </div>
+                                    <div class="flex flex-col gap-2">
                                         <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">Imagen del Taller</label>
                                         <div class="relative group">
                                             <input type="text" id="edit-taller-item-imagen" class="w-full p-3 rounded-xl border border-slate-200 focus:border-primary outline-none transition-all pl-12" placeholder="URL de la imagen...">
@@ -927,7 +957,10 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="mt-8 pt-8 border-t border-slate-100 flex justify-end">
+                            <div class="mt-8 pt-8 border-t border-slate-100 flex justify-end gap-3">
+                                <button id="btn-delete-taller-item" class="px-6 py-4 bg-red-50 text-red-600 border border-red-100 rounded-2xl font-bold uppercase tracking-widest hover:bg-red-600 hover:text-white transition-all active:scale-95 hidden">
+                                    Eliminar
+                                </button>
                                 <button id="btn-save-taller-item" class="px-10 py-4 bg-primary text-white rounded-2xl font-bold uppercase tracking-widest hover:brightness-105 transition-all shadow-lg active:scale-95">
                                     Guardar Taller
                                 </button>
@@ -951,5 +984,9 @@
         </footer>
     </div>
 </div>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
 <script src="app.js?v=1.1"></script>
 </body></html>

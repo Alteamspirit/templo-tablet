@@ -6,3 +6,5 @@ node_modules/
 *.log
 iniciar_servidor.bat
 test_parser.js
+
+.vercel

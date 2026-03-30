@@ -66,13 +66,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const SHEET_ID = "1ApJeSkf-ZCRUrNXDAHZqDXd7foPXlkiG30PDp6VyEJ0";
     const RITUALES_STORAGE_KEY = 'templo_rituales_config';
     const STORAGE_KEY = 'templo_talleres_config';
+    const HOME_QR_STORAGE_KEY = 'templo_home_qrs_config';
     const INACTIVITY_LIMIT = 120000; // 2 minutos
     const CYCLE_INTERVAL = 15000;
     
-    const TABS_MULTIMEDIA = [
-        { name: "Multimedia", gid: "940405146" },
-        { name: "Hoja 2", gid: "24507850" }
+    let TABS_MULTIMEDIA = [
+        { name: "Fondos", gid: "940405146" }
     ];
+
+    let HOME_QR_DATA = JSON.parse(localStorage.getItem(HOME_QR_STORAGE_KEY)) || {
+        ios: "https://apps.apple.com/es/app/id6444007889",
+        android: "https://play.google.com/store/apps/details?id=es.iconecta.zenestetic"
+    };
 
     const CATEGORY_BANNERS = {
         "HOLISTIC AYURVEDA": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/HOLISTIC-SHIRODHARA-819x1024.png",
@@ -262,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else { migratedData.push(t); }
         });
         TALLERES_DATA = migratedData;
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(TALLERES_DATA));
+        if(window.saveToCloud) window.saveToCloud('talleresData', TALLERES_DATA, STORAGE_KEY); else localStorage.setItem(STORAGE_KEY, JSON.stringify(TALLERES_DATA));
     }
 
     // --- DATOS CATÁLOGO TALLERES (Igual que Experiencias) ---
@@ -323,6 +328,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnExitApp = document.getElementById('btn-exit-app');
     const btnToggleFullscreen = document.getElementById('btn-toggle-fullscreen');
     const btnDeleteHotspot = document.getElementById('btn-delete-hotspot');
+    const btnDeleteRitual = document.getElementById('btn-delete-ritual');
+    const btnDeleteTallerItem = document.getElementById('btn-delete-taller-item');
     const btnSaveConfig = document.getElementById('btn-save-talleres-config');
     const btnSaveRitual = document.getElementById('btn-save-ritual');
     const btnDrawMode = document.getElementById('btn-draw-mode');
@@ -446,9 +453,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response && response.table && response.table.rows) {
                 const newList = response.table.rows.map(row => {
                     if (!row.c || !row.c[0] || !row.c[0].v) return null;
-                    const url = row.c[0].v.trim();
-                    if (!url.startsWith('http')) return null;
-                    return { url, alt: row.c[1] ? row.c[1].v : "Oferta" };
+                    const rawUrl = row.c[0].v.trim();
+                    
+                    let finalUrl = rawUrl;
+                    if (rawUrl.includes('drive.google.com')) {
+                        const fileId = getDriveFileId(rawUrl);
+                        if (fileId) finalUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
+                    } else if (!rawUrl.startsWith('http')) {
+                        return null; // Ignorar si no es URL ni Drive
+                    }
+                    
+                    return { url: finalUrl, alt: row.c[1] ? row.c[1].v : "Oferta" };
                 }).filter(item => item !== null);
 
                 if (newList.length > 0) {
@@ -462,8 +477,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    function renderHomeQRs() {
+        const iosImg = document.getElementById('home-qr-ios-img');
+        const androidImg = document.getElementById('home-qr-android-img');
+        const iosInput = document.getElementById('edit-home-qr-ios');
+        const androidInput = document.getElementById('edit-home-qr-android');
+
+        if (iosImg) iosImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(HOME_QR_DATA.ios)}`;
+        if (androidImg) androidImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(HOME_QR_DATA.android)}`;
+        
+        if (iosInput) iosInput.value = HOME_QR_DATA.ios;
+        if (androidInput) androidInput.value = HOME_QR_DATA.android;
+    }
+
+    // Render inicial de QRs de inicio
+    renderHomeQRs();
+
     async function syncBannersFromSheet() {
-        const BANNER_GID = "1520188941"; // GID por defecto para la pestaña Banners
+        const BANNER_GID = "0"; // GID para la pestaña Banner
         document.querySelectorAll('.banner-sync-script').forEach(s => s.remove());
         const script = document.createElement('script');
         script.className = 'banner-sync-script';
@@ -804,7 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentEditingId = null;
                 
                 // Guardar en Storage inmediatamente al borrar
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(TALLERES_DATA));
+                if(window.saveToCloud) window.saveToCloud('talleresData', TALLERES_DATA, STORAGE_KEY); else localStorage.setItem(STORAGE_KEY, JSON.stringify(TALLERES_DATA));
                 
                 renderTalleres();
                 const form = document.getElementById('admin-taller-form');
@@ -869,7 +900,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Guardar en Storage
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(TALLERES_DATA));
+            if(window.saveToCloud) window.saveToCloud('talleresData', TALLERES_DATA, STORAGE_KEY); else localStorage.setItem(STORAGE_KEY, JSON.stringify(TALLERES_DATA));
             
             showToast('Configuración guardada correctamente');
             renderTalleres(); // Actualizar previsualización y lista admin
@@ -969,7 +1000,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="material-symbols-outlined text-primary text-4xl">touch_app</span>
                     </div>
                     <h3 class="text-xl font-serif font-bold text-slate-800 mb-4 uppercase tracking-widest">Información de Actividad</h3>
-                    <p class="text-zen-gray italic leading-relaxed">Toca cualquier actividad en el horario para ver los detalles, precios y realizar tu inscripción.</p>
+                    <p class="text-zen-gray italic serif-text leading-relaxed px-4">"Tu cuerpo es tu templo, cuídalo. Toca cualquier actividad para ver los detalles e inscribirte."</p>
                 </div>
             `;
         }
@@ -1010,7 +1041,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
                             <div class="flex flex-col">
                                 <span class="text-xs font-bold text-zen-gray/80 uppercase tracking-widest">Duración</span>
-                                <span class="text-slate-800 font-medium whitespace-nowrap"><span class="material-symbols-outlined text-[16px] align-text-bottom mr-1 text-zen-gray">schedule</span>${ritual.duracion}</span>
+                                <span class="text-slate-800 font-medium whitespace-nowrap"><span class="material-symbols-outlined text-[16px] align-text-bottom mr-1 text-zen-gray">${ritual.fecha ? "calendar_today" : "schedule"}</span>${ritual.fecha || ritual.duracion}</span>
                             </div>
                             <div class="flex flex-col text-right">
                                 <span class="text-xs font-bold text-zen-gray/80 uppercase tracking-widest">Precio</span>
@@ -1182,13 +1213,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     precio: row.c[4] ? row.c[4].v : '',
                     imagen: row.c[5] ? row.c[5].v : '',
                     image: row.c[5] ? row.c[5].v : '',
-                    categoria: row.c[6] ? row.c[6].v : 'Otros'
+                    categoria: row.c[6] ? row.c[6].v : 'Otros',
+                    fecha: row.c[7] ? row.c[7].v : ''
                 };
             }).filter(item => item !== null && item.titulo);
 
             if (newData.length > 0) {
                 MOCK_RITUALES = newData;
-                localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
+                if(window.saveToCloud) window.saveToCloud('rituales', MOCK_RITUALES, RITUALES_STORAGE_KEY); else localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
                 console.log("✅ Experiencias sincronizadas desde la nube");
                 renderRituales();
                 if (typeof renderAdminRituales === 'function') renderAdminRituales();
@@ -1214,7 +1246,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (newData.length > 0) {
                 MOCK_TALLERES_CATALOGO = newData;
-                localStorage.setItem(TALLERES_CATALOGO_KEY, JSON.stringify(MOCK_TALLERES_CATALOGO));
+                if(window.saveToCloud) window.saveToCloud('talleresCatalogo', MOCK_TALLERES_CATALOGO, TALLERES_CATALOGO_KEY); else localStorage.setItem(TALLERES_CATALOGO_KEY, JSON.stringify(MOCK_TALLERES_CATALOGO));
                 console.log("✅ Talleres sincronizados desde la nube");
                 renderTalleresCatalogo();
                 if (typeof renderAdminTalleresCatalogo === 'function') renderAdminTalleresCatalogo();
@@ -1238,42 +1270,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (newData.length > 0) {
                 QR_DATA = newData;
-                localStorage.setItem(QR_STORAGE_KEY, JSON.stringify(QR_DATA));
+                if(window.saveToCloud) window.saveToCloud('qrConfig', QR_DATA, QR_STORAGE_KEY); else localStorage.setItem(QR_STORAGE_KEY, JSON.stringify(QR_DATA));
                 console.log("✅ QRs sincronizados desde la nube");
                 renderQRGrid();
             }
         } catch (e) { console.error("Error sincronizando QRs:", e); }
     };
 
-    window.syncRemoteData = function() {
-        const btn = document.getElementById('btn-sync-all');
-        const icon = document.getElementById('sync-icon');
-        const status = document.getElementById('last-sync-time');
-        
-        if (icon) icon.classList.add('animate-spin');
-        if (status) status.innerText = "Sincronizando...";
-        
-        console.log("🔄 Sincronizando datos remotos...");
-        showToast('Sincronizando con Google Sheets...');
-        
-        fetchSheetData('Experiencias', 'handleExperienciasResponse');
-        fetchSheetData('TalleresItems', 'handleTalleresItemsResponse');
-        fetchSheetData('QRs', 'handleQRsResponse');
-        
-        // Simular finalización de animación (las callbacks reales actualizan la UI)
-        setTimeout(() => {
-            if (icon) icon.classList.remove('animate-spin');
-            if (status) {
-                const now = new Date();
-                status.innerText = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
-            }
-        }, 2000);
-    };
-
-    const btnSyncAll = document.getElementById('btn-sync-all');
-    if (btnSyncAll) {
-        btnSyncAll.addEventListener('click', syncRemoteData);
-    }
+    // Sincronización remota consolidada al final del script
 
     async function syncCitasFromSheet() {
         fetchSheetData('Citas', 'handleCitasResponse');
@@ -1478,13 +1482,36 @@ document.addEventListener('DOMContentLoaded', () => {
         list.innerHTML = MOCK_RITUALES.map(ritual => `
             <button onclick="cargarRitualEnEditor(${ritual.id})" class="w-full p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-primary/30 hover:shadow-md transition-all text-left flex items-center justify-between group">
                 <div class="flex flex-col gap-1 overflow-hidden">
-                    <span class="text-[10px] font-bold text-primary uppercase tracking-widest">${ritual.categoria}</span>
-                    <span class="text-sm font-bold text-slate-800 truncate">${ritual.titulo}</span>
-                    <span class="text-[10px] text-slate-400 font-medium">${ritual.precio} | ${ritual.duracion}</span>
+                    <span class="text-[10px] font-bold text-primary uppercase tracking-widest">${ritual.categoria || 'Otros'}</span>
+                    <span class="text-sm font-bold text-slate-800 truncate">${ritual.titulo || 'Nueva Experiencia'}</span>
+                    <span class="text-[10px] text-slate-400 font-medium">${ritual.precio || '0,00€'} | ${ritual.fecha || ritual.duracion || '--'}</span>
                 </div>
                 <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">edit</span>
             </button>
         `).join('');
+    }
+
+    const btnNewRitual = document.getElementById('btn-new-ritual');
+    if (btnNewRitual) {
+        btnNewRitual.addEventListener('click', () => {
+            const newId = Date.now();
+            const newRitual = {
+                id: newId,
+                titulo: 'Nueva Experiencia',
+                descripcion: 'Descripción corta.',
+                duracion: '60 min',
+                precio: '0,00€',
+                fecha: '',
+                imagen: '',
+                image: '',
+                categoria: 'Otros'
+            };
+            MOCK_RITUALES.unshift(newRitual); // Agregar al inicio
+            if(window.saveToCloud) window.saveToCloud('rituales', MOCK_RITUALES, RITUALES_STORAGE_KEY); else localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
+            renderAdminRituales();
+            renderRituales();
+            window.cargarRitualEnEditor(newId);
+        });
     }
 
     window.cargarRitualEnEditor = function(id) {
@@ -1492,18 +1519,46 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!ritual) return;
         
         currentEditingRitualId = id;
-        document.getElementById('edit-ritual-titulo').value = ritual.titulo;
-        document.getElementById('edit-ritual-desc').value = ritual.descripcion;
-        document.getElementById('edit-ritual-duracion').value = ritual.duracion;
-        document.getElementById('edit-ritual-precio').value = ritual.precio;
+        document.getElementById('edit-ritual-titulo').value = ritual.titulo || '';
+        document.getElementById('edit-ritual-desc').value = ritual.descripcion || '';
+        document.getElementById('edit-ritual-duracion').value = ritual.duracion || '';
+        document.getElementById('edit-ritual-precio').value = ritual.precio || '';
+        const fechaEl = document.getElementById('edit-ritual-fecha');
+        if (fechaEl) fechaEl.value = ritual.fecha || '';
         const imgField = document.getElementById('edit-ritual-imagen');
-        imgField.value = ritual.image || ritual.imagen;
+        imgField.value = ritual.image || ritual.imagen || '';
         
         // Actualizar vista previa
         updateRitualPreview(imgField.value);
+
+        // Mostrar botón borrar
+        if (btnDeleteRitual) btnDeleteRitual.classList.remove('hidden');
         
         // Hacer scroll al formulario en móviles
         document.getElementById('admin-ritual-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    if (btnDeleteRitual) {
+        btnDeleteRitual.addEventListener('click', () => {
+            if (!currentEditingRitualId) return;
+            if (confirm('¿Seguro que quieres eliminar esta experiencia permanentemente?')) {
+                MOCK_RITUALES = MOCK_RITUALES.filter(r => r.id !== currentEditingRitualId);
+                currentEditingRitualId = null;
+                if(window.saveToCloud) window.saveToCloud('rituales', MOCK_RITUALES, RITUALES_STORAGE_KEY); else localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
+                showToast('Experiencia eliminada');
+                btnDeleteRitual.classList.add('hidden');
+                // Limpiar campos
+                document.getElementById('edit-ritual-titulo').value = '';
+                document.getElementById('edit-ritual-desc').value = '';
+                document.getElementById('edit-ritual-duracion').value = '';
+                document.getElementById('edit-ritual-precio').value = '';
+                if (document.getElementById('edit-ritual-fecha')) document.getElementById('edit-ritual-fecha').value = '';
+                document.getElementById('edit-ritual-imagen').value = '';
+                updateRitualPreview('');
+                renderAdminRituales();
+                renderRituales();
+            }
+        });
     }
 
     function updateRitualPreview(url) {
@@ -1534,26 +1589,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnSaveRitual) {
         btnSaveRitual.addEventListener('click', () => {
-            if (!currentEditingRitualId) {
-                showToast('Selecciona primero una experiencia para editar');
-                return;
+            let index = MOCK_RITUALES.findIndex(r => r.id === currentEditingRitualId);
+            
+            if (!currentEditingRitualId || index === -1) {
+                // Auto crear si no había nada seleccionado
+                const newId = Date.now();
+                currentEditingRitualId = newId;
+                const newRitual = { id: newId, titulo: '', descripcion: '', duracion: '', precio: '', fecha: '', imagen: '', image: '', categoria: 'Otros' };
+                MOCK_RITUALES.unshift(newRitual);
+                index = 0;
             }
 
-            const index = MOCK_RITUALES.findIndex(r => r.id === currentEditingRitualId);
-            if (index === -1) return;
-
+            const fechaEl = document.getElementById('edit-ritual-fecha');
+            
             MOCK_RITUALES[index] = {
                 ...MOCK_RITUALES[index],
-                titulo: document.getElementById('edit-ritual-titulo').value,
+                titulo: document.getElementById('edit-ritual-titulo').value || 'Nueva Experiencia',
                 descripcion: document.getElementById('edit-ritual-desc').value,
                 duracion: document.getElementById('edit-ritual-duracion').value,
                 precio: document.getElementById('edit-ritual-precio').value,
+                fecha: fechaEl ? fechaEl.value : '',
                 imagen: document.getElementById('edit-ritual-imagen').value,
                 image: document.getElementById('edit-ritual-imagen').value
             };
 
-            localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
-            showToast('Experiencia actualizada correctamente');
+            if(window.saveToCloud) window.saveToCloud('rituales', MOCK_RITUALES, RITUALES_STORAGE_KEY); else localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
+            showToast('Experiencia guardada correctamente');
             renderAdminRituales();
             renderRituales(); // Actualizar vista pública
         });
@@ -1574,14 +1635,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
                 <div class="p-6 flex flex-col flex-grow">
-                    <h3 class="text-lg font-bold text-slate-800 mb-2 truncate">${taller.titulo}</h3>
+                    <h3 class="text-lg font-bold text-slate-800 mb-1 truncate">${taller.titulo}</h3>
+                    <p class="text-xs text-primary font-bold mb-2 uppercase tracking-widest">${taller.fecha || ''}</p>
                     <p class="text-sm text-slate-500 line-clamp-3 mb-6 flex-grow leading-relaxed">${taller.descripcion}</p>
                     <div class="pt-4 border-t border-slate-50 flex items-center justify-between mt-auto">
                         <span class="text-primary font-bold">${taller.precio}</span>
-                        <div class="flex items-center gap-1 text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+                        <button onclick="showToast('Disponible próximamente, contacta en recepción')" class="flex items-center gap-1 text-[10px] font-bold text-slate-400 hover:text-primary transition-colors uppercase tracking-tighter p-1 hover:bg-slate-50 rounded-lg active:scale-95">
                             <span class="material-symbols-outlined text-sm">schedule</span>
                             Consultar
-                        </div>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1595,11 +1657,31 @@ document.addEventListener('DOMContentLoaded', () => {
             <button onclick="cargarTallerItemEnEditor(${taller.id})" class="w-full p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-primary/30 hover:shadow-md transition-all text-left flex items-center justify-between group">
                 <div class="flex flex-col gap-1 overflow-hidden">
                     <span class="text-sm font-bold text-slate-800 truncate">${taller.titulo}</span>
-                    <span class="text-[10px] text-slate-400 font-medium">${taller.precio}</span>
+                    <span class="text-[10px] text-slate-400 font-medium">${taller.precio} ${taller.fecha ? '| ' + taller.fecha : ''}</span>
                 </div>
                 <span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors">edit</span>
             </button>
         `).join('');
+    }
+
+    const btnNewTallerItem = document.getElementById('btn-new-taller-item');
+    if (btnNewTallerItem) {
+        btnNewTallerItem.addEventListener('click', () => {
+            const newId = Date.now();
+            const newTaller = {
+                id: newId,
+                titulo: 'Nuevo Taller',
+                descripcion: 'Descripción...',
+                precio: '0,00€',
+                fecha: '',
+                imagen: ''
+            };
+            MOCK_TALLERES_CATALOGO.unshift(newTaller); // Add to beginning
+            if(window.saveToCloud) window.saveToCloud('talleresCatalogo', MOCK_TALLERES_CATALOGO, TALLERES_CATALOGO_KEY); else localStorage.setItem(TALLERES_CATALOGO_KEY, JSON.stringify(MOCK_TALLERES_CATALOGO));
+            renderAdminTalleresCatalogo();
+            renderTalleresCatalogo();
+            window.cargarTallerItemEnEditor(newId);
+        });
     }
 
     window.cargarTallerItemEnEditor = function(id) {
@@ -1610,11 +1692,39 @@ document.addEventListener('DOMContentLoaded', () => {
         if (editTallerItemTitulo) editTallerItemTitulo.value = taller.titulo;
         if (editTallerItemDesc) editTallerItemDesc.value = taller.descripcion;
         if (editTallerItemPrecio) editTallerItemPrecio.value = taller.precio;
+        const fechaInput = document.getElementById('edit-taller-item-fecha');
+        if (fechaInput) fechaInput.value = taller.fecha || '';
         if (editTallerItemImagen) editTallerItemImagen.value = taller.imagen;
         
         updateTallerItemPreview(taller.imagen || '');
+
+        // Mostrar botón borrar
+        if (btnDeleteTallerItem) btnDeleteTallerItem.classList.remove('hidden');
         
         document.getElementById('admin-talleres-item-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    if (btnDeleteTallerItem) {
+        btnDeleteTallerItem.addEventListener('click', () => {
+            if (!currentEditingTallerItemId) return;
+            if (confirm('¿Seguro que quieres eliminar este taller del catálogo permanentemente?')) {
+                MOCK_TALLERES_CATALOGO = MOCK_TALLERES_CATALOGO.filter(t => t.id !== currentEditingTallerItemId);
+                currentEditingTallerItemId = null;
+                if(window.saveToCloud) window.saveToCloud('talleresCatalogo', MOCK_TALLERES_CATALOGO, TALLERES_CATALOGO_KEY); else localStorage.setItem(TALLERES_CATALOGO_KEY, JSON.stringify(MOCK_TALLERES_CATALOGO));
+                showToast('Taller eliminado del catálogo');
+                btnDeleteTallerItem.classList.add('hidden');
+                // Limpiar campos
+                if (editTallerItemTitulo) editTallerItemTitulo.value = '';
+                if (editTallerItemDesc) editTallerItemDesc.value = '';
+                if (editTallerItemPrecio) editTallerItemPrecio.value = '';
+                const fechaInput = document.getElementById('edit-taller-item-fecha');
+                if (fechaInput) fechaInput.value = '';
+                if (editTallerItemImagen) editTallerItemImagen.value = '';
+                updateTallerItemPreview('');
+                renderAdminTalleresCatalogo();
+                renderTalleresCatalogo();
+            }
+        });
     }
 
     function updateTallerItemPreview(url) {
@@ -1639,24 +1749,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnSaveTallerItem) {
         btnSaveTallerItem.addEventListener('click', () => {
-            if (!currentEditingTallerItemId) {
-                showToast('Selecciona primero un taller para editar');
-                return;
+            let index = MOCK_TALLERES_CATALOGO.findIndex(t => t.id === currentEditingTallerItemId);
+            
+            if (!currentEditingTallerItemId || index === -1) {
+                // Auto crear si no había nada seleccionado
+                const newId = Date.now();
+                currentEditingTallerItemId = newId;
+                const newTaller = { id: newId, titulo: '', descripcion: '', precio: '', fecha: '', imagen: '' };
+                MOCK_TALLERES_CATALOGO.unshift(newTaller);
+                index = 0;
             }
 
-            const index = MOCK_TALLERES_CATALOGO.findIndex(t => t.id === currentEditingTallerItemId);
-            if (index === -1) return;
+            const fechaInput = document.getElementById('edit-taller-item-fecha');
 
             MOCK_TALLERES_CATALOGO[index] = {
                 ...MOCK_TALLERES_CATALOGO[index],
-                titulo: editTallerItemTitulo.value,
+                titulo: editTallerItemTitulo.value || 'Nuevo Taller',
                 descripcion: editTallerItemDesc.value,
                 precio: editTallerItemPrecio.value,
+                fecha: fechaInput ? fechaInput.value : '',
                 imagen: editTallerItemImagen.value
             };
 
-            localStorage.setItem(TALLERES_CATALOGO_KEY, JSON.stringify(MOCK_TALLERES_CATALOGO));
-            showToast('Taller actualizado correctamente');
+            if(window.saveToCloud) window.saveToCloud('talleresCatalogo', MOCK_TALLERES_CATALOGO, TALLERES_CATALOGO_KEY); else localStorage.setItem(TALLERES_CATALOGO_KEY, JSON.stringify(MOCK_TALLERES_CATALOGO));
+            showToast('Taller guardado correctamente');
             renderAdminTalleresCatalogo();
             renderTalleresCatalogo(); 
         });
@@ -1666,22 +1782,41 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTalleresCatalogo();
     const QR_STORAGE_KEY = 'templo_qr_config';
     let QR_DATA = JSON.parse(localStorage.getItem(QR_STORAGE_KEY)) || [
-        { id: 1, titulo: 'Reserva Clases', data: 'https://example.com/clases' },
-        { id: 2, titulo: 'Inscripción Talleres', data: 'https://example.com/talleres' },
-        { id: 3, titulo: 'Síguenos Instagram', data: 'https://instagram.com' },
-        { id: 4, titulo: 'Web Oficial', data: 'https://google.com' }
+        { id: 1, titulo: 'App Store (iOS)', data: 'https://apps.apple.com/es/app/el-templo-by-zen-est%C3%A9tic/id6444007889' },
+        { id: 2, titulo: 'Google Play (Android)', data: 'https://play.google.com/store/apps/details?id=es.iconecta.zenestetic' },
+        { id: 3, titulo: 'Facebook', data: 'https://www.facebook.com/zenesteticalicante/?locale=es_ES' },
+        { id: 4, titulo: 'Web Oficial', data: 'https://eltemplobyzenestetic.es/' },
+        { id: 5, titulo: 'Instagram', data: 'https://www.instagram.com/eltemplobyzenestetic/' }
     ];
 
     function renderQRGrid() {
         if (!qrGridContainer) return;
-        qrGridContainer.innerHTML = QR_DATA.map(qr => `
-            <div class="qr-card bg-white border border-sand rounded-2xl p-6 flex flex-col items-center shadow-sm hover:shadow-xl transition-all group">
-                <h3 class="qr-title text-sm font-bold text-slate-700 uppercase tracking-widest mb-6">${qr.titulo}</h3>
-                <div class="qr-image-container size-48 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center relative overflow-hidden">
-                     <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(qr.data)}" class="w-full h-full p-2" alt="QR">
+        
+        // Forzamos 4-5 columnas en tablets para que quepan en una fila
+        qrGridContainer.className = "grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 w-full transition-all duration-700 items-start pb-8";
+        
+        qrGridContainer.innerHTML = QR_DATA.map((qr, index) => {
+            const isApp = qr.titulo.toLowerCase().includes('app') || qr.titulo.toLowerCase().includes('play');
+            const badgeColor = isApp ? 'bg-secondary text-white' : 'bg-primary text-secondary';
+            
+            let icon = 'language';
+            if (qr.titulo.toLowerCase().includes('apple') || qr.titulo.toLowerCase().includes('ios')) icon = 'apple';
+            else if (qr.titulo.toLowerCase().includes('play') || qr.titulo.toLowerCase().includes('android')) icon = 'google_play';
+            else if (qr.titulo.toLowerCase().includes('facebook')) icon = 'facebook';
+            else if (qr.titulo.toLowerCase().includes('instagram')) icon = 'photo_camera';
+
+            return `
+                <div class="qr-card bg-white border-2 border-sand rounded-3xl p-4 md:p-5 flex flex-col items-center shadow-lg transition-all group scale-100 hover:scale-[1.02]">
+                    <div class="${badgeColor} px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter mb-4 text-center w-full truncate shadow-sm">${qr.titulo}</div>
+                    <div class="qr-image-container w-full aspect-square bg-white border border-sand rounded-2xl flex items-center justify-center relative overflow-hidden shadow-inner mb-4">
+                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qr.data)}" class="w-full h-full p-4" alt="QR ${qr.titulo}">
+                    </div>
+                    <div class="flex items-center justify-center size-8 rounded-full bg-slate-50 border border-sand text-primary/30">
+                        <span class="material-symbols-outlined text-lg">${icon}</span>
+                    </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
         
         // Animación de entrada
         setTimeout(() => {
@@ -1702,17 +1837,35 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnSaveQrs) {
         btnSaveQrs.addEventListener('click', () => {
             const newData = [];
-            for (let i = 1; i <= 4; i++) {
+            for (let i = 1; i <= 5; i++) {
+                const titleVal = document.getElementById(`qr-title-${i}`)?.value || '';
+                const dataVal = document.getElementById(`qr-data-${i}`)?.value || '';
                 newData.push({
                     id: i,
-                    titulo: document.getElementById(`qr-title-${i}`).value,
-                    data: document.getElementById(`qr-data-${i}`).value
+                    titulo: titleVal,
+                    data: dataVal
                 });
             }
             QR_DATA = newData;
-            localStorage.setItem(QR_STORAGE_KEY, JSON.stringify(QR_DATA));
+            if(window.saveToCloud) window.saveToCloud('qrConfig', QR_DATA, QR_STORAGE_KEY); else localStorage.setItem(QR_STORAGE_KEY, JSON.stringify(QR_DATA));
             showToast('Configuración QR guardada correctamente');
             renderQRGrid();
+        });
+    }
+
+    const btnSaveHomeQrs = document.getElementById('btn-save-home-qrs');
+    if (btnSaveHomeQrs) {
+        btnSaveHomeQrs.addEventListener('click', () => {
+            const iosVal = document.getElementById('edit-home-qr-ios').value.trim();
+            const androidVal = document.getElementById('edit-home-qr-android').value.trim();
+            
+            if (iosVal) HOME_QR_DATA.ios = iosVal;
+            if (androidVal) HOME_QR_DATA.android = androidVal;
+            
+            if(window.saveToCloud) window.saveToCloud('homeQRs', HOME_QR_DATA, HOME_QR_STORAGE_KEY); else localStorage.setItem(HOME_QR_STORAGE_KEY, JSON.stringify(HOME_QR_DATA));
+            
+            showToast('QRs de inicio actualizados');
+            renderHomeQRs();
         });
     }
 
@@ -1962,6 +2115,45 @@ document.addEventListener('DOMContentLoaded', () => {
     syncMediaFromSheet();
     syncBannersFromSheet();
 
+    const btnSyncAll = document.getElementById('btn-sync-all');
+    if (btnSyncAll) {
+        btnSyncAll.addEventListener('click', async () => {
+            const icon = document.getElementById('sync-icon');
+            const indicator = document.getElementById('sync-status-indicator');
+            
+            if (icon) icon.classList.add('animate-spin');
+            if (indicator) {
+                indicator.innerHTML = '<span class="size-2 bg-amber-500 rounded-full animate-pulse"></span> Sincronizando contenido...';
+                indicator.className = 'mt-4 px-4 py-2 bg-amber-50 text-amber-700 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2';
+            }
+
+            try {
+                // Sincronización multi-pestaña
+                fetchSheetData('Experiencias', 'handleExperienciasResponse');
+                fetchSheetData('TalleresItems', 'handleTalleresItemsResponse');
+                fetchSheetData('QRs', 'handleQRsResponse');
+                
+                // Sincronización de banners y salvapantallas
+                await Promise.all([syncMediaFromSheet(), syncBannersFromSheet()]);
+                
+                showToast('Contenido sincronizado con Google Sheet');
+                if (indicator) {
+                    indicator.innerHTML = '<span class="size-2 bg-green-500 rounded-full"></span> Sincronización Exitosa';
+                    indicator.className = 'mt-4 px-4 py-2 bg-green-50 text-green-700 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2';
+                }
+            } catch (e) {
+                console.error("Error en sincronización manual:", e);
+                showToast('Error al sincronizar');
+                if (indicator) {
+                    indicator.innerHTML = '<span class="size-2 bg-red-500 rounded-full"></span> Error en Sincronización';
+                    indicator.className = 'mt-4 px-4 py-2 bg-red-50 text-red-700 rounded-lg text-[10px] font-bold uppercase tracking-widest flex items-center gap-2';
+                }
+            } finally {
+                if (icon) setTimeout(() => icon.classList.remove('animate-spin'), 1000);
+            }
+        });
+    }
+
     function showNextMedia() {
         if (!mediaList || mediaList.length === 0) return;
         
@@ -2052,4 +2244,66 @@ document.addEventListener('DOMContentLoaded', () => {
  
     // Iniciar temporizador base
     resetInactivity();
+
+    // ==========================================
+    // Sincronización Realtime con Firebase
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyA5ghS4kxQKX_b8VYelD5pAAwuE1pqgOe8",
+      authDomain: "tablet-templo.firebaseapp.com",
+      databaseURL: "https://tablet-templo-default-rtdb.firebaseio.com",
+      projectId: "tablet-templo",
+      storageBucket: "tablet-templo.firebasestorage.app",
+      messagingSenderId: "796706681996",
+      appId: "1:796706681996:web:28efce21b0667e3a8937a9"
+    };
+    
+    if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        window.saveToCloud = function(path, data, storageKey) {
+            localStorage.setItem(storageKey, JSON.stringify(data));
+            db.ref(path).set(data);
+        };
+
+        function setupFirebaseSync(path, localData, storageKey, onDataUpdate) {
+            const ref = db.ref(path);
+            ref.on('value', (snap) => {
+                if (snap.exists() && snap.val() !== null) {
+                    const data = snap.val();
+                    localStorage.setItem(storageKey, JSON.stringify(data));
+                    if (onDataUpdate) onDataUpdate(data);
+                } else {
+                    ref.set(localData);
+                }
+            });
+        }
+
+        setupFirebaseSync('rituales', MOCK_RITUALES, RITUALES_STORAGE_KEY, (data) => {
+            MOCK_RITUALES = data;
+            if (typeof renderAdminRituales === 'function') renderAdminRituales();
+            if (typeof renderRituales === 'function') renderRituales();
+        });
+
+        setupFirebaseSync('talleresCatalogo', MOCK_TALLERES_CATALOGO, TALLERES_CATALOGO_KEY, (data) => {
+            MOCK_TALLERES_CATALOGO = data;
+            if (typeof renderAdminTalleresCatalogo === 'function') renderAdminTalleresCatalogo();
+            if (typeof renderTalleresCatalogo === 'function') renderTalleresCatalogo();
+        });
+
+        setupFirebaseSync('talleresData', TALLERES_DATA, STORAGE_KEY, (data) => {
+            TALLERES_DATA = data;
+            if (!isDrawing && !isDragging && !isResizing) {
+                renderTalleres();
+            }
+        });
+
+        setupFirebaseSync('qrConfig', QR_DATA, QR_STORAGE_KEY, (data) => {
+            QR_DATA = data;
+            if (typeof renderQRGrid === 'function') renderQRGrid();
+        });
+    }
+
+
 });

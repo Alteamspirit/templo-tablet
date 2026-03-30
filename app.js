@@ -2248,17 +2248,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==========================================
     // Sincronización Realtime con Firebase
     // ==========================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyA5ghS4kxQKX_b8VYelD5pAAwuE1pqgOe8",
-      authDomain: "tablet-templo.firebaseapp.com",
-      databaseURL: "https://tablet-templo-default-rtdb.firebaseio.com",
-      projectId: "tablet-templo",
-      storageBucket: "tablet-templo.firebasestorage.app",
-      messagingSenderId: "796706681996",
-      appId: "1:796706681996:web:28efce21b0667e3a8937a9"
-    };
-    
     if (typeof firebase !== 'undefined' && !firebase.apps.length) {
+        // firebaseConfig debe estar definido en firebase-config.js (ignorado en git)
+        if (typeof firebaseConfig === 'undefined') {
+            console.warn("⚠️ firebaseConfig no encontrado. La sincronización en la nube podría no funcionar.");
+            return;
+        }
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 

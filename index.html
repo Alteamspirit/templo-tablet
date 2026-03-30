@@ -253,49 +253,49 @@
             </button>
         </div>
 
-        <footer class="mt-auto py-10 flex items-center justify-between w-full max-w-[1400px] mx-auto border-t border-sand/30 px-12 relative overflow-visible">
-            <!-- Bloque Izquierda: Reloj -->
-            <div class="w-1/4 flex justify-start">
-                <div id="clock-container" class="relative z-[100] flex items-center gap-4 text-slate-800 cursor-pointer select-none bg-white/40 backdrop-blur-sm px-6 py-4 rounded-2xl border border-white/50 shadow-sm hover:translate-y-[-2px] transition-all">
-                    <span class="material-symbols-outlined text-2xl text-primary/70">schedule</span>
+        <footer class="mt-auto py-12 flex items-center justify-between w-full max-w-[1500px] mx-auto border-t border-sand/30 px-16 relative overflow-visible">
+            <!-- Bloque Izquierda: Reloj (20% ancho) -->
+            <div class="w-1/5 flex justify-start">
+                <div id="clock-container" class="relative z-[100] flex items-center gap-4 text-slate-800 cursor-pointer select-none bg-white/50 backdrop-blur-xl px-7 py-5 rounded-3xl border border-white/60 shadow-lg hover:translate-y-[-4px] transition-all duration-300">
+                    <span class="material-symbols-outlined text-3xl text-primary/70">schedule</span>
                     <div class="flex flex-col">
-                        <p id="time-display" class="text-xl font-black leading-none tracking-tight">10:45 AM</p>
-                        <p id="date-display" class="text-[10px] font-bold text-zen-gray/60 uppercase tracking-[0.2em] mt-1.5">Lunes, 24 de Mayo</p>
+                        <p id="time-display" class="text-2xl font-black leading-none tracking-tight">10:45 AM</p>
+                        <p id="date-display" class="text-[11px] font-bold text-zen-gray/60 uppercase tracking-[0.25em] mt-2">Lunes, 24 de Mayo</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Bloque Centro: QRs (Posicionado centralmente) -->
-            <div class="absolute left-1/2 -translate-x-1/2 flex gap-12 items-center">
-                <div class="flex flex-col items-center gap-3">
-                    <div class="size-32 bg-white border-2 border-sand p-2.5 rounded-2xl flex items-center justify-center shadow-xl hover:translate-y-[-4px] transition-all group">
+            <!-- Bloque Centro: QRs (Posicionamiento Absoluto al centro exacto) -->
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-14 items-center">
+                <div class="flex flex-col items-center gap-4 group">
+                    <div class="size-36 bg-white border-2 border-sand p-3.5 rounded-[2rem] flex items-center justify-center shadow-2xl hover:translate-y-[-6px] transition-all duration-500 hover:rotate-2">
                         <img id="home-qr-ios-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://apps.apple.com/es/app/id6444007889" class="size-full object-contain" alt="QR iOS">
                     </div>
-                    <span class="text-[10px] font-black text-zen-gray/70 uppercase tracking-[0.2em] group-hover:text-primary transition-colors">App Store</span>
+                    <span class="text-[11px] font-black text-zen-gray/70 uppercase tracking-[0.2em] group-hover:text-primary transition-colors">App Store</span>
                 </div>
-                <div class="flex flex-col items-center gap-3">
-                    <div class="size-32 bg-white border-2 border-sand p-2.5 rounded-2xl flex items-center justify-center shadow-xl hover:translate-y-[-4px] transition-all group">
+                <div class="flex flex-col items-center gap-4 group">
+                    <div class="size-36 bg-white border-2 border-sand p-3.5 rounded-[2rem] flex items-center justify-center shadow-2xl hover:translate-y-[-6px] transition-all duration-500 hover:-rotate-2">
                         <img id="home-qr-android-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://play.google.com/store/apps/details?id=es.iconecta.zenestetic" class="size-full object-contain" alt="QR Android">
                     </div>
-                    <span class="text-[10px] font-black text-zen-gray/70 uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Google Play</span>
+                    <span class="text-[11px] font-black text-zen-gray/70 uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Google Play</span>
                 </div>
             </div>
 
-            <!-- Bloque Derecha: Mockup + Frase -->
-            <div class="w-1/3 flex justify-end items-center px-4">
-                <div class="flex items-center gap-6 group">
-                    <div class="flex flex-col text-right max-w-[200px]">
-                        <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest leading-tight">Lleva el bienestar<br>en tu bolsillo</h4>
-                        <div class="mt-2 flex justify-end">
-                            <p class="text-[10px] text-zen-gray/90 leading-relaxed font-bold bg-white/40 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm border border-white/20">
-                                Descarga nuestra App
-                            </p>
+            <!-- Bloque Derecha: Promoción (40% ancho para evitar solapamientos) -->
+            <div class="w-2/5 flex justify-end items-center mr-[-40px]">
+                <div class="flex items-center gap-16 group">
+                    <div class="flex flex-col text-right">
+                        <h4 class="text-lg font-black text-slate-800 uppercase tracking-[0.1em] leading-[1.1] drop-shadow-sm">Lleva el bienestar<br>siempre contigo</h4>
+                        <div class="mt-4 flex justify-end">
+                            <span class="text-[11px] font-bold text-[#8B7E74] bg-[#8B7E74]/10 px-5 py-2.5 rounded-full border border-[#8B7E74]/20 shadow-inner">
+                                DESCARGA NUESTRA APP
+                            </span>
                         </div>
                     </div>
-                    <!-- Mockup V3 - Diagonal, Grande y Sin Fondo (Pure White + Multiply) -->
-                    <div class="relative w-56 h-[400px] -mt-32 transition-transform duration-700 ease-out group-hover:scale-105" style="transform: rotate(-12deg);">
-                        <!-- mix-blend-multiply es infalible sobre fondo blanco puro -->
-                        <img src="assets/phone_mockup_v3.png" alt="App Templo Smartphone" class="w-full h-full object-contain mix-blend-multiply contrast-[1.05] brightness-[1.02] drop-shadow-3xl pointer-events-none">
+                    <!-- Mockup Smartphone: Más grande y posicionado de forma flotante -->
+                    <div class="relative w-64 h-[440px] -mt-56 transition-all duration-1000 ease-in-out group-hover:scale-110" style="transform: rotate(-10deg);">
+                        <!-- mix-blend-multiply corregido; el fondo blanco debe desaparecer sobre la base clara -->
+                        <img src="assets/phone_mockup_v3.png" alt="App Templo Smartphone" class="w-full h-full object-contain mix-blend-multiply contrast-[1.02] saturate-110 pointer-events-none filter drop-shadow-[0_35px_60px_rgba(0,0,0,0.3)]">
                     </div>
                 </div>
             </div>

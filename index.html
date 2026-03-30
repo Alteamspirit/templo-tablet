@@ -253,43 +253,43 @@
             </button>
         </div>
 
-        <footer class="mt-auto py-8 flex items-center justify-between w-full max-w-[1400px] mx-auto border-t border-sand/30 px-12 relative overflow-visible">
-            <!-- Reloj Inferior Izquierda -->
-            <div id="clock-container" class="relative z-[100] flex items-center gap-4 text-slate-800 cursor-pointer select-none bg-white/40 backdrop-blur-sm px-6 py-4 rounded-2xl border border-white/50 shadow-sm hover:translate-y-[-2px] transition-all">
-                <span class="material-symbols-outlined text-2xl text-primary/70">schedule</span>
-                <div class="flex flex-col">
-                    <p id="time-display" class="text-xl font-black leading-none tracking-tight">10:45 AM</p>
-                    <p id="date-display" class="text-[10px] font-bold text-zen-gray/60 uppercase tracking-[0.2em] mt-1.5">Lunes, 24 de Mayo</p>
+        <footer class="mt-auto py-10 flex items-center justify-between w-full max-w-[1400px] mx-auto border-t border-sand/30 px-12 relative overflow-visible">
+            <!-- Bloque Izquierda: Reloj -->
+            <div class="w-1/4 flex justify-start">
+                <div id="clock-container" class="relative z-[100] flex items-center gap-4 text-slate-800 cursor-pointer select-none bg-white/40 backdrop-blur-sm px-6 py-4 rounded-2xl border border-white/50 shadow-sm hover:translate-y-[-2px] transition-all">
+                    <span class="material-symbols-outlined text-2xl text-primary/70">schedule</span>
+                    <div class="flex flex-col">
+                        <p id="time-display" class="text-xl font-black leading-none tracking-tight">10:45 AM</p>
+                        <p id="date-display" class="text-[10px] font-bold text-zen-gray/60 uppercase tracking-[0.2em] mt-1.5">Lunes, 24 de Mayo</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Sección Promocional Mobile App -->
-            <div class="flex items-center gap-12 relative">
-                <!-- Teléfono Mockup con efecto de elevación -->
-                <div class="relative w-24 h-48 -mt-24 drop-shadow-[0_20px_50px_rgba(0,0,0,0.15)] hidden md:block hover:scale-105 transition-transform duration-500">
-                    <img src="assets/phone_mockup.png" alt="App Templo Smartphone" class="w-full h-full object-contain pointer-events-none">
-                </div>
-
-                <!-- Eslogan y Descarga -->
-                <div class="flex flex-col gap-2 max-w-[300px]">
-                    <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest leading-tight">Lleva el bienestar en tu bolsillo</h4>
-                    <p class="text-[10px] text-zen-gray/80 leading-relaxed font-medium">Gestiona tus citas y descubre rituales exclusivos con nuestra App oficial.</p>
-                </div>
-
-                <!-- QRs de Descarga -->
-                <div class="flex gap-8">
-                    <div class="flex flex-col items-center gap-3">
-                        <div class="size-24 bg-white border-2 border-sand p-2.5 rounded-2xl flex items-center justify-center shadow-xl hover:translate-y-[-4px] transition-all">
-                            <img id="home-qr-ios-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://apps.apple.com/es/app/id6444007889" class="size-full object-contain" alt="QR iOS">
-                        </div>
-                        <span class="text-[9px] font-black text-zen-gray/60 uppercase tracking-[0.15em]">App Store</span>
+            <!-- Bloque Centro: QRs (Posicionado centralmente) -->
+            <div class="absolute left-1/2 -translate-x-1/2 flex gap-12 items-center">
+                <div class="flex flex-col items-center gap-3">
+                    <div class="size-32 bg-white border-2 border-sand p-2.5 rounded-2xl flex items-center justify-center shadow-xl hover:translate-y-[-4px] transition-all group">
+                        <img id="home-qr-ios-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://apps.apple.com/es/app/id6444007889" class="size-full object-contain" alt="QR iOS">
                     </div>
-                    <div class="flex flex-col items-center gap-3">
-                        <div class="size-24 bg-white border-2 border-sand p-2.5 rounded-2xl flex items-center justify-center shadow-xl hover:translate-y-[-4px] transition-all">
-                            <img id="home-qr-android-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://play.google.com/store/apps/details?id=es.iconecta.zenestetic" class="size-full object-contain" alt="QR Android">
-                        </div>
-                        <span class="text-[9px] font-black text-zen-gray/60 uppercase tracking-[0.15em]">Google Play</span>
+                    <span class="text-[10px] font-black text-zen-gray/70 uppercase tracking-[0.2em] group-hover:text-primary transition-colors">App Store</span>
+                </div>
+                <div class="flex flex-col items-center gap-3">
+                    <div class="size-32 bg-white border-2 border-sand p-2.5 rounded-2xl flex items-center justify-center shadow-xl hover:translate-y-[-4px] transition-all group">
+                        <img id="home-qr-android-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://play.google.com/store/apps/details?id=es.iconecta.zenestetic" class="size-full object-contain" alt="QR Android">
                     </div>
+                    <span class="text-[10px] font-black text-zen-gray/70 uppercase tracking-[0.2em] group-hover:text-primary transition-colors">Google Play</span>
+                </div>
+            </div>
+
+            <!-- Bloque Derecha: Mockup + Frase -->
+            <div class="w-1/4 flex justify-end items-center gap-6">
+                <div class="flex flex-col text-right">
+                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest leading-tight">Lleva el bienestar en tu bolsillo</h4>
+                    <p class="text-[9px] text-zen-gray/60 leading-relaxed font-medium mt-1">Descarga nuestra App oficial</p>
+                </div>
+                <!-- Mockup V2 - Más grande y sin fondo -->
+                <div class="relative w-32 h-64 -mt-32 drop-shadow-[0_25px_60px_rgba(0,0,0,0.2)] hidden md:block hover:scale-105 transition-transform duration-500">
+                    <img src="assets/phone_mockup_v2.png" alt="App Templo Smartphone" class="w-full h-full object-contain pointer-events-none filter drop-shadow-lg">
                 </div>
             </div>
         </footer>

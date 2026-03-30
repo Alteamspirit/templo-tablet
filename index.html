@@ -254,8 +254,8 @@
         </div>
 
         <footer class="mt-auto py-12 flex items-center justify-between w-full max-w-[1500px] mx-auto border-t border-sand/30 px-16 relative overflow-visible">
-            <!-- Bloque Izquierda: Reloj (20% ancho) -->
-            <div class="w-1/5 flex justify-start">
+            <!-- Bloque Izquierda: Reloj (Estable) -->
+            <div class="w-1/4 flex justify-start">
                 <div id="clock-container" class="relative z-[100] flex items-center gap-4 text-slate-800 cursor-pointer select-none bg-white/50 backdrop-blur-xl px-7 py-5 rounded-3xl border border-white/60 shadow-lg hover:translate-y-[-4px] transition-all duration-300">
                     <span class="material-symbols-outlined text-3xl text-primary/70">schedule</span>
                     <div class="flex flex-col">
@@ -281,26 +281,14 @@
                 </div>
             </div>
 
-            <!-- Bloque Derecha: Promoción (40% ancho para evitar solapamientos) -->
-            <div class="w-2/5 flex justify-end items-center mr-[-40px] relative">
-                <div class="flex items-center gap-16 group">
-                    <!-- Texto Promocional con margen preventivo -->
-                    <div class="flex flex-col text-right z-20 pr-4">
-                        <h4 class="text-xl font-black text-slate-800 uppercase tracking-widest leading-[1.1]">Lleva el bienestar<br>siempre contigo</h4>
-                        <div class="mt-4 flex justify-end">
-                            <span class="text-[11px] font-bold text-white bg-secondary px-6 py-3 rounded-full shadow-lg hover:scale-105 transition-transform">
-                                DESCARGA NUESTRA APP
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <!-- Contenedor del Mockup V6 con Máscara Radial para Transparencia Perfecta -->
-                    <div class="relative w-80 h-[460px] pointer-events-none" 
-                         style="transform: rotate(-10deg) translateY(20px); 
-                                mask-image: radial-gradient(circle at center, black 40%, transparent 85%); 
-                                -webkit-mask-image: radial-gradient(circle at center, black 40%, transparent 85%);">
-                        <!-- Al usar el fondo sand (v6) + la máscara radial, los bordes de la foto se desvanecen al fondo de la web -->
-                        <img src="assets/phone_mockup_v6.png" alt="App Templo Smartphone" class="w-full h-full object-contain filter drop-shadow-2xl">
+            <!-- Bloque Derecha: Promoción (Sin teléfono, alineado a la derecha) -->
+            <div class="w-1/4 flex justify-end items-center">
+                <div class="flex flex-col text-right">
+                    <h4 class="text-lg font-black text-slate-800 uppercase tracking-widest leading-tight">Lleva el bienestar<br>siempre contigo</h4>
+                    <div class="mt-4 flex justify-end">
+                        <span class="text-[10px] font-black text-white bg-primary/80 px-5 py-2 rounded-full shadow-sm">
+                            DESCARGA NUESTRA APP
+                        </span>
                     </div>
                 </div>
             </div>

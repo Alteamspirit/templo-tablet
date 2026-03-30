@@ -483,8 +483,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const iosInput = document.getElementById('edit-home-qr-ios');
         const androidInput = document.getElementById('edit-home-qr-android');
 
-        if (iosImg) iosImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(HOME_QR_DATA.ios)}`;
-        if (androidImg) androidImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(HOME_QR_DATA.android)}`;
+        if (iosImg) iosImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(HOME_QR_DATA.ios)}`;
+        if (androidImg) androidImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(HOME_QR_DATA.android)}`;
         
         if (iosInput) iosInput.value = HOME_QR_DATA.ios;
         if (androidInput) androidInput.value = HOME_QR_DATA.android;

@@ -253,45 +253,52 @@
             </button>
         </div>
 
-        <footer class="mt-auto py-10 flex items-center justify-between w-full max-w-[1400px] mx-auto border-t border-sand/30 px-12 relative overflow-visible">
-            <!-- Bloque Izquierda: Reloj (Compacto) -->
-            <div class="w-1/4 flex justify-start">
-                <div id="clock-container" class="relative z-[100] flex items-center gap-3 text-slate-800 cursor-pointer select-none bg-white/40 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/50 shadow-sm hover:translate-y-[-2px] transition-all">
-                    <span class="material-symbols-outlined text-2xl text-primary/70">schedule</span>
+        <footer class="mt-auto py-8 flex items-center justify-between w-full max-w-[1400px] mx-auto border-t border-sand/30 px-12 relative overflow-visible">
+            <!-- Bloque Izquierda: Reloj (Ultra Compacto) -->
+            <div class="w-1/5 flex justify-start">
+                <div id="clock-container" class="relative z-[100] flex items-center gap-2.5 text-slate-800 cursor-pointer select-none bg-white/30 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/40 shadow-sm hover:translate-y-[-1px] transition-all">
+                    <span class="material-symbols-outlined text-lg text-primary/70">schedule</span>
                     <div class="flex flex-col">
-                        <p id="time-display" class="text-xl font-black leading-none tracking-tight">10:45 AM</p>
-                        <p id="date-display" class="text-[9px] font-bold text-zen-gray/60 uppercase tracking-[0.2em] mt-1.5">Lunes, 24 de Mayo</p>
+                        <p id="time-display" class="text-base font-black leading-none tracking-tight">10:45 AM</p>
+                        <p id="date-display" class="text-[8px] font-bold text-zen-gray/50 uppercase tracking-[0.15em] mt-1">Lunes, 24 de Mayo</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Bloque Centro: QRs (Ajustado) -->
-            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex gap-12 items-center">
-                <div class="flex flex-col items-center gap-3 group">
-                    <div class="size-28 bg-white border-2 border-sand p-2.5 rounded-2xl flex items-center justify-center shadow-xl hover:translate-y-[-4px] transition-all group">
-                        <img id="home-qr-ios-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://apps.apple.com/es/app/id6444007889" class="size-full object-contain" alt="QR iOS">
+            <!-- Bloque Centro: Grupo de Descarga Unificado (QRs + Texto) -->
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-10">
+                <!-- QRs -->
+                <div class="flex gap-4">
+                    <div class="flex flex-col items-center gap-2 group">
+                        <div class="size-24 bg-white border border-sand p-2 rounded-xl flex items-center justify-center shadow-lg hover:translate-y-[-2px] transition-all">
+                            <img id="home-qr-ios-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://apps.apple.com/es/app/id6444007889" class="size-full object-contain" alt="QR iOS">
+                        </div>
+                        <span class="text-[8px] font-black text-zen-gray/50 uppercase tracking-widest">App Store</span>
                     </div>
-                    <span class="text-[9px] font-black text-zen-gray/60 uppercase tracking-[0.15em]">App Store</span>
-                </div>
-                <div class="flex flex-col items-center gap-3 group">
-                    <div class="size-28 bg-white border-2 border-sand p-2.5 rounded-2xl flex items-center justify-center shadow-xl hover:translate-y-[-4px] transition-all group">
-                        <img id="home-qr-android-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://play.google.com/store/apps/details?id=es.iconecta.zenestetic" class="size-full object-contain" alt="QR Android">
+                    <div class="flex flex-col items-center gap-2 group">
+                        <div class="size-24 bg-white border border-sand p-2 rounded-xl flex items-center justify-center shadow-lg hover:translate-y-[-2px] transition-all">
+                            <img id="home-qr-android-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://play.google.com/store/apps/details?id=es.iconecta.zenestetic" class="size-full object-contain" alt="QR Android">
+                        </div>
+                        <span class="text-[8px] font-black text-zen-gray/50 uppercase tracking-widest">Google Play</span>
                     </div>
-                    <span class="text-[9px] font-black text-zen-gray/60 uppercase tracking-[0.15em]">Google Play</span>
                 </div>
-            </div>
+                
+                <!-- Separador Sutil -->
+                <div class="h-12 w-px bg-sand/50"></div>
 
-            <!-- Bloque Derecha: Promoción (Más cerca de los QRs) -->
-            <div class="w-1/4 flex justify-end items-center pr-4">
-                <div class="flex flex-col text-left mr-8">
-                    <h4 class="text-xs font-black text-slate-800 uppercase tracking-widest leading-tight">Lleva el bienestar<br>siempre contigo</h4>
-                    <div class="mt-2 flex justify-start">
-                        <span class="text-[8px] font-black text-white bg-primary/80 px-4 py-1.5 rounded-full shadow-sm">
-                            DESCARGA NUESTRA APP
+                <!-- Texto Promocional (Ahora pegado a los QRs) -->
+                <div class="flex flex-col text-left">
+                    <h4 class="text-[10px] font-black text-slate-800 uppercase tracking-[0.15em] leading-tight">Lleva el bienestar<br>siempre contigo</h4>
+                    <div class="mt-2">
+                        <span class="text-[7px] font-black text-white bg-primary/70 px-3 py-1 rounded-full shadow-sm uppercase tracking-widest">
+                            Descarga App
                         </span>
                     </div>
                 </div>
             </div>
+
+            <!-- Bloque Derecha: Vacío para equilibrio -->
+            <div class="w-1/5"></div>
         </footer>
     </div> <!-- relative flex -->
 </div> <!-- main-scroll-container -->

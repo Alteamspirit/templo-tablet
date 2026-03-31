@@ -67,7 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const RITUALES_STORAGE_KEY = 'templo_rituales_config';
     const STORAGE_KEY = 'templo_talleres_config';
     const HOME_QR_STORAGE_KEY = 'templo_home_qrs_config';
-    const INACTIVITY_LIMIT = 120000; // 2 minutos
+    const SCHEDULE_IMG_STORAGE_KEY = 'templo_schedule_img_config';
+    const INACTIVITY_LIMIT = 60000; // 1 minuto
     const CYCLE_INTERVAL = 15000;
     
     let TABS_MULTIMEDIA = [
@@ -78,6 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ios: "https://apps.apple.com/es/app/id6444007889",
         android: "https://play.google.com/store/apps/details?id=es.iconecta.zenestetic"
     };
+
+    let SCHEDULE_IMG_URL = localStorage.getItem(SCHEDULE_IMG_STORAGE_KEY) || "agenda/Marzo 26.jpeg";
 
     const CATEGORY_BANNERS = {
         "HOLISTIC AYURVEDA": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/HOLISTIC-SHIRODHARA-819x1024.png",
@@ -339,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeDisplay = document.getElementById('time-display');
     const drawingRect = document.getElementById('drawing-rect');
     const bannerSlider = document.getElementById('banner-slider');
-    const bannerDotsContainer = document.querySelector('#banner-container div.absolute.bottom-4');
+    const bannerDotsContainer = document.getElementById('banner-dots-container');
     const ritualesListContainer = document.getElementById('rituales-list-container');
     const citasListContainer = document.getElementById('citas-list-container');
     const citasEmptyState = document.getElementById('citas-empty-state');
@@ -500,6 +503,34 @@ document.addEventListener('DOMContentLoaded', () => {
         script.className = 'banner-sync-script';
         script.src = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json;responseHandler:handleBannersResponse&gid=${BANNER_GID}&tq=select%20A,B`;
         document.body.appendChild(script);
+    }
+
+    // --- LÓGICA DE HORARIOS / AGENDA ---
+    function renderScheduleImage() {
+        const publicImg = document.getElementById('schedule-main-img');
+        const adminImg = document.getElementById('admin-schedule-img');
+        const adminInput = document.getElementById('edit-schedule-img-url');
+
+        if (publicImg) publicImg.src = SCHEDULE_IMG_URL;
+        if (adminImg) adminImg.src = SCHEDULE_IMG_URL;
+        if (adminInput) adminInput.value = SCHEDULE_IMG_URL;
+    }
+
+    // Render inicial
+    renderScheduleImage();
+
+    const btnSaveScheduleImg = document.getElementById('btn-save-schedule-img');
+    if (btnSaveScheduleImg) {
+        btnSaveScheduleImg.addEventListener('click', () => {
+            const newUrl = document.getElementById('edit-schedule-img-url').value.trim();
+            if (newUrl) {
+                SCHEDULE_IMG_URL = newUrl;
+                localStorage.setItem(SCHEDULE_IMG_STORAGE_KEY, SCHEDULE_IMG_URL);
+                if (window.saveToCloud) window.saveToCloud('scheduleImg', SCHEDULE_IMG_URL, SCHEDULE_IMG_STORAGE_KEY);
+                renderScheduleImage();
+                showToast('Imagen de horario actualizada');
+            }
+        });
     }
 
 
@@ -1782,37 +1813,58 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTalleresCatalogo();
     const QR_STORAGE_KEY = 'templo_qr_config';
     let QR_DATA = JSON.parse(localStorage.getItem(QR_STORAGE_KEY)) || [
-        { id: 1, titulo: 'App Store (iOS)', data: 'https://apps.apple.com/es/app/el-templo-by-zen-est%C3%A9tic/id6444007889' },
-        { id: 2, titulo: 'Google Play (Android)', data: 'https://play.google.com/store/apps/details?id=es.iconecta.zenestetic' },
+        { id: 1, titulo: 'YouTube', data: 'https://www.youtube.com/@eltemplobyzenestetic' },
+        { id: 2, titulo: 'Instagram', data: 'https://www.instagram.com/eltemplobyzenestetic/' },
         { id: 3, titulo: 'Facebook', data: 'https://www.facebook.com/zenesteticalicante/?locale=es_ES' },
-        { id: 4, titulo: 'Web Oficial', data: 'https://eltemplobyzenestetic.es/' },
-        { id: 5, titulo: 'Instagram', data: 'https://www.instagram.com/eltemplobyzenestetic/' }
+        { id: 4, titulo: 'WhatsApp', data: 'https://wa.me/34682054593' },
+        { id: 5, titulo: 'Página Web', data: 'https://eltemplobyzenestetic.es/' }
     ];
 
     function renderQRGrid() {
         if (!qrGridContainer) return;
         
-        // Forzamos 4-5 columnas en tablets para que quepan en una fila
-        qrGridContainer.className = "grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5 w-full transition-all duration-700 items-start pb-8";
+        // Filtrar para mostrar solo Redes Sociales (excluir App Store, Google Play, iOS, Android)
+        const socialQRs = QR_DATA.filter(qr => {
+            const title = qr.titulo.toLowerCase();
+            const data = qr.data.toLowerCase();
+            return !title.includes('app store') && !title.includes('play store') && 
+                   !title.includes('ios') && !title.includes('android') &&
+                   !data.includes('apps.apple.com') && !data.includes('play.google.com');
+        });
+
+        qrGridContainer.className = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 w-full transition-all duration-700 items-start pb-12";
         
-        qrGridContainer.innerHTML = QR_DATA.map((qr, index) => {
-            const isApp = qr.titulo.toLowerCase().includes('app') || qr.titulo.toLowerCase().includes('play');
-            const badgeColor = isApp ? 'bg-secondary text-white' : 'bg-primary text-secondary';
-            
-            let icon = 'language';
-            if (qr.titulo.toLowerCase().includes('apple') || qr.titulo.toLowerCase().includes('ios')) icon = 'apple';
-            else if (qr.titulo.toLowerCase().includes('play') || qr.titulo.toLowerCase().includes('android')) icon = 'google_play';
-            else if (qr.titulo.toLowerCase().includes('facebook')) icon = 'facebook';
-            else if (qr.titulo.toLowerCase().includes('instagram')) icon = 'photo_camera';
+        const brandIcons = {
+            youtube: `<svg class="size-8" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`,
+            instagram: `<svg class="size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>`,
+            facebook: `<svg class="size-8" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>`,
+            whatsapp: `<svg class="size-8" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.41 0 .01 5.399 0 12.039c0 2.123.554 4.197 1.608 6.041l-1.71 6.241 6.386-1.674a11.803 11.803 0 0 0 5.76 1.496h.004c6.64 0 12.04-5.399 12.042-12.041a11.776 11.776 0 0 0-3.441-8.361"/></svg>`,
+            web: `<svg class="size-8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2zm-1 2v2h2V4h-2zm0 14v2h2v-2h-2zm5-12.5V7h2V5.5h-2zm0 13V20h2v-1.5h-2zM7 5.5V7h2V5.5H7zm0 13V20h2v-1.5H7z"/></svg>`
+        };
+        
+        qrGridContainer.innerHTML = socialQRs.map((qr, index) => {
+            const title = qr.titulo.toLowerCase();
+            const dataUrl = qr.data.toLowerCase();
+            let brandKey = 'web';
+
+            if (title.includes('youtube') || dataUrl.includes('youtube.com')) brandKey = 'youtube';
+            else if (title.includes('instagram') || dataUrl.includes('instagram.com')) brandKey = 'instagram';
+            else if (title.includes('facebook') || dataUrl.includes('facebook.com')) brandKey = 'facebook';
+            else if (title.includes('whatsapp') || dataUrl.includes('wa.me') || title.includes('canal')) brandKey = 'whatsapp';
 
             return `
-                <div class="qr-card bg-white border-2 border-sand rounded-3xl p-4 md:p-5 flex flex-col items-center shadow-lg transition-all group scale-100 hover:scale-[1.02]">
-                    <div class="${badgeColor} px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter mb-4 text-center w-full truncate shadow-sm">${qr.titulo}</div>
-                    <div class="qr-image-container w-full aspect-square bg-white border border-sand rounded-2xl flex items-center justify-center relative overflow-hidden shadow-inner mb-4">
-                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qr.data)}" class="w-full h-full p-4" alt="QR ${qr.titulo}">
+                <div class="qr-card bg-zen-gray rounded-[1.25rem] shadow-xl border border-white/10 transition-all duration-500 hover:-translate-y-1" style="flex: 1 1 0; min-width: 0; max-width: 200px; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px;">
+                    <div class="w-full aspect-square bg-white border border-white/20 p-1.5 sm:p-2 rounded-2xl shadow-sm transition-all duration-500 hover:shadow-2xl group overflow-hidden">
+                         <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qr.data)}" class="w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700" alt="QR ${qr.titulo}">
                     </div>
-                    <div class="flex items-center justify-center size-8 rounded-full bg-slate-50 border border-sand text-primary/30">
-                        <span class="material-symbols-outlined text-lg">${icon}</span>
+                    
+                    <div class="flex flex-col items-center py-1" style="gap: 4px;">
+                        <div class="text-white/90 scale-75 drop-shadow-sm transition-transform group-hover:scale-90">
+                            ${brandIcons[brandKey]}
+                        </div>
+                        <span class="text-[9px] sm:text-[10px] font-black text-white/50 uppercase text-center leading-none px-1" style="letter-spacing: 0.1em;">
+                            ${qr.titulo}
+                        </span>
                     </div>
                 </div>
             `;
@@ -2192,6 +2244,10 @@ document.addEventListener('DOMContentLoaded', () => {
         screensaverActive = true;
         screensaver.classList.remove('hidden');
 
+        // Ocultar el reloj durante el salvapantallas
+        const clock = document.getElementById('clock-container');
+        if (clock) clock.classList.add('hidden');
+
         // Mostrar el screensaver primero (necesario para que el autoplay de YouTube funcione)
         setTimeout(() => {
             screensaver.classList.remove('opacity-0');
@@ -2217,6 +2273,10 @@ document.addEventListener('DOMContentLoaded', () => {
         screensaverActive = false;
         
         screensaver.classList.add('opacity-0');
+
+        // Volver a mostrar el reloj al salir del salvapantallas
+        const clock = document.getElementById('clock-container');
+        if (clock) clock.classList.remove('hidden');
         clearInterval(fallbackCycleInterval);
         
         setTimeout(() => {
@@ -2295,7 +2355,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         setupFirebaseSync('qrConfig', QR_DATA, QR_STORAGE_KEY, (data) => {
-            QR_DATA = data;
+            // Asegurar que siempre tenemos 5 elementos y que no contienen QRs de descarga
+            const defaults = [
+                { id: 1, titulo: 'YouTube', data: 'https://www.youtube.com/@eltemplobyzenestetic' },
+                { id: 2, titulo: 'Instagram', data: 'https://www.instagram.com/eltemplobyzenestetic/' },
+                { id: 3, titulo: 'Facebook', data: 'https://www.facebook.com/zenesteticalicante/?locale=es_ES' },
+                { id: 4, titulo: 'WhatsApp', data: 'https://wa.me/34682054593' },
+                { id: 5, titulo: 'Página Web', data: 'https://eltemplobyzenestetic.es/' }
+            ];
+            
+            let finalData = Array.isArray(data) ? [...data] : [];
+            
+            // Mapear y Limpiar: Si encontramos App Store o Google Play, sustituirlos por el default correspondiente
+            finalData = finalData.map((qr, index) => {
+                const lowTitle = qr.titulo.toLowerCase();
+                const lowData = qr.data.toLowerCase();
+                if (lowTitle.includes('app store') || lowTitle.includes('play store') || lowTitle.includes('google play') || lowData.includes('apps.apple.com') || lowData.includes('play.google.com')) {
+                    // Reemplazar por el default de ese slot
+                    return defaults[index] || defaults[0];
+                }
+                return qr;
+            });
+
+            // Rellenar hasta 5 si faltan
+            if (finalData.length < 5) {
+                for (let i = finalData.length; i < 5; i++) {
+                    finalData.push(defaults[i]);
+                }
+            }
+            
+            QR_DATA = finalData;
             if (typeof renderQRGrid === 'function') renderQRGrid();
         });
     }

@@ -62,6 +62,31 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClock();
     setInterval(updateClock, 60000); // Actualizar cada minuto
 
+    // Helper: Convertir enlaces de Drive/Dropbox a enlaces directos de imagen
+    const getDirectImgLink = (url) => {
+        if (!url || typeof url !== 'string') return url;
+        // Limpiar espacios y comillas accidentales (muy común al copiar/pegar)
+        let trimUrl = url.trim().replace(/^["']|["']$/g, '').trim();
+        
+        // Google Drive
+        if (trimUrl.includes('drive.google.com')) {
+            let id = '';
+            if (trimUrl.includes('id=')) {
+                id = trimUrl.split('id=')[1].split('&')[0];
+            } else if (trimUrl.includes('/d/')) {
+                id = trimUrl.split('/d/')[1].split('/')[0];
+            }
+            if (id) return `https://drive.google.com/uc?id=${id}`;
+        }
+        
+        // Dropbox
+        if (trimUrl.includes('dropbox.com')) {
+            return trimUrl.replace('www.dropbox.com', 'dl.dropboxusercontent.com').replace('?dl=0', '');
+        }
+        
+        return trimUrl;
+    };
+
     // --- CONFIGURACIÓN Y DATOS (Centralizado al inicio) ---
     const SHEET_ID = "1ApJeSkf-ZCRUrNXDAHZqDXd7foPXlkiG30PDp6VyEJ0";
     const RITUALES_STORAGE_KEY = 'templo_rituales_config';
@@ -507,13 +532,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- LÓGICA DE HORARIOS / AGENDA ---
     function renderScheduleImage() {
-        const publicImg = document.getElementById('schedule-main-img');
-        const adminImg = document.getElementById('admin-schedule-img');
-        const adminInput = document.getElementById('edit-schedule-img-url');
-
-        if (publicImg) publicImg.src = SCHEDULE_IMG_URL;
-        if (adminImg) adminImg.src = SCHEDULE_IMG_URL;
-        if (adminInput) adminInput.value = SCHEDULE_IMG_URL;
+        const scheduleImg = document.getElementById('schedule-img');
+        const adminScheduleImg = document.getElementById('admin-schedule-img');
+        const scheduleInput = document.getElementById('edit-schedule-img-url');
+        
+        const imageUrl = getDirectImgLink(SCHEDULE_IMG_URL);
+        
+        if (scheduleImg) scheduleImg.src = imageUrl;
+        if (adminScheduleImg) adminScheduleImg.src = imageUrl;
+        if (scheduleInput && !scheduleInput.value) scheduleInput.value = SCHEDULE_IMG_URL;
     }
 
     // Render inicial
@@ -522,13 +549,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSaveScheduleImg = document.getElementById('btn-save-schedule-img');
     if (btnSaveScheduleImg) {
         btnSaveScheduleImg.addEventListener('click', () => {
-            const newUrl = document.getElementById('edit-schedule-img-url').value.trim();
-            if (newUrl) {
-                SCHEDULE_IMG_URL = newUrl;
+            const input = document.getElementById('edit-schedule-img-url');
+            const newUrlRaw = input?.value.trim() || '';
+            const newUrlConverted = getDirectImgLink(newUrlRaw);
+
+            if (newUrlConverted) {
+                SCHEDULE_IMG_URL = newUrlConverted;
                 localStorage.setItem(SCHEDULE_IMG_STORAGE_KEY, SCHEDULE_IMG_URL);
                 if (window.saveToCloud) window.saveToCloud('scheduleImg', SCHEDULE_IMG_URL, SCHEDULE_IMG_STORAGE_KEY);
                 renderScheduleImage();
+                if (input) input.value = SCHEDULE_IMG_URL;
                 showToast('Imagen de horario actualizada');
+            }
+        });
+    }
+
+    // Listener para previsualización inmediata de la imagen de agenda en el editor
+    const scheduleImgInput = document.getElementById('edit-schedule-img-url');
+    if (scheduleImgInput) {
+        scheduleImgInput.addEventListener('input', (e) => {
+            const adminImg = document.getElementById('admin-schedule-img');
+            if (adminImg) {
+                adminImg.src = getDirectImgLink(e.target.value);
             }
         });
     }
@@ -910,31 +952,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (btnSaveConfig) {
         btnSaveConfig.addEventListener('click', () => {
-            if (!currentEditingId) return;
+            // 1. Guardar la imagen del horario (Agenda) si ha cambiado
+            const scheduleInput = document.getElementById('edit-schedule-img-url');
+            const newUrlRaw = scheduleInput?.value.trim() || '';
+            const newUrlConverted = getDirectImgLink(newUrlRaw);
 
-            const index = TALLERES_DATA.findIndex(t => t.id === currentEditingId);
-            if (index === -1) return;
-
-            // Actualizar datos
-            TALLERES_DATA[index].titulo = document.getElementById('edit-taller-titulo').value;
-            TALLERES_DATA[index].fecha = document.getElementById('edit-taller-fecha').value;
-            TALLERES_DATA[index].descripcion = document.getElementById('edit-taller-desc').value;
-            TALLERES_DATA[index].qr = document.getElementById('edit-taller-qr').value;
-
-            const top = parseFloat(document.getElementById('edit-taller-top').value);
-            const left = parseFloat(document.getElementById('edit-taller-left').value);
-            const width = parseFloat(document.getElementById('edit-taller-width').value);
-            const height = parseFloat(document.getElementById('edit-taller-height').value);
-
-            if (TALLERES_DATA[index].hotspots) {
-                TALLERES_DATA[index].hotspots[0] = { top, left, width, height };
+            if (newUrlConverted && newUrlConverted !== SCHEDULE_IMG_URL) {
+                SCHEDULE_IMG_URL = newUrlConverted;
+                localStorage.setItem(SCHEDULE_IMG_STORAGE_KEY, SCHEDULE_IMG_URL);
+                if (window.saveToCloud) {
+                    window.saveToCloud('scheduleImg', SCHEDULE_IMG_URL, SCHEDULE_IMG_STORAGE_KEY);
+                }
+                renderScheduleImage();
+                if (scheduleInput) scheduleInput.value = SCHEDULE_IMG_URL;
             }
 
-            // Guardar en Storage
-            if(window.saveToCloud) window.saveToCloud('talleresData', TALLERES_DATA, STORAGE_KEY); else localStorage.setItem(STORAGE_KEY, JSON.stringify(TALLERES_DATA));
+            // 2. Guardar hotspots de la actividad seleccionada
+            if (currentEditingId) {
+                const index = TALLERES_DATA.findIndex(t => t.id === currentEditingId);
+                if (index !== -1) {
+                    // Actualizar datos
+                    TALLERES_DATA[index].titulo = document.getElementById('edit-taller-titulo').value;
+                    TALLERES_DATA[index].fecha = document.getElementById('edit-taller-fecha').value;
+                    TALLERES_DATA[index].descripcion = document.getElementById('edit-taller-desc').value;
+                    TALLERES_DATA[index].qr = document.getElementById('edit-taller-qr').value;
+
+                    const topVal = parseFloat(document.getElementById('edit-taller-top').value);
+                    const leftVal = parseFloat(document.getElementById('edit-taller-left').value);
+                    const widthVal = parseFloat(document.getElementById('edit-taller-width').value);
+                    const heightVal = parseFloat(document.getElementById('edit-taller-height').value);
+
+                    if (TALLERES_DATA[index].hotspots) {
+                        TALLERES_DATA[index].hotspots[0] = { top: topVal, left: leftVal, width: widthVal, height: heightVal };
+                    }
+
+                    // Guardar en Storage
+                    if(window.saveToCloud) window.saveToCloud('talleresData', TALLERES_DATA, STORAGE_KEY); else localStorage.setItem(STORAGE_KEY, JSON.stringify(TALLERES_DATA));
+                    renderTalleres(); // Actualizar previsualización y lista admin
+                }
+            }
             
             showToast('Configuración guardada correctamente');
-            renderTalleres(); // Actualizar previsualización y lista admin
         });
     }
 
@@ -1597,10 +1655,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const placeholder = document.getElementById('preview-placeholder');
         if (!preview || !placeholder) return;
 
-        if (url && url.trim().length > 5) {
-            preview.src = url;
-            preview.classList.remove('opacity-0');
-            placeholder.classList.add('hidden');
+        const directUrl = getDirectImgLink(url);
+
+        if (directUrl && directUrl.trim().length > 5) {
+            preview.src = directUrl;
+            preview.onload = () => {
+                preview.classList.remove('opacity-0');
+                placeholder.classList.add('hidden');
+            };
+            preview.onerror = () => {
+                preview.classList.add('opacity-0');
+                placeholder.classList.remove('hidden');
+            };
         } else {
             preview.classList.add('opacity-0');
             placeholder.classList.remove('hidden');
@@ -1618,38 +1684,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // (Ya capturado al inicio)
 
-    if (btnSaveRitual) {
-        btnSaveRitual.addEventListener('click', () => {
-            let index = MOCK_RITUALES.findIndex(r => r.id === currentEditingRitualId);
-            
-            if (!currentEditingRitualId || index === -1) {
-                // Auto crear si no había nada seleccionado
-                const newId = Date.now();
-                currentEditingRitualId = newId;
-                const newRitual = { id: newId, titulo: '', descripcion: '', duracion: '', precio: '', fecha: '', imagen: '', image: '', categoria: 'Otros' };
-                MOCK_RITUALES.unshift(newRitual);
-                index = 0;
-            }
+    // Los elementos ya están capturados al inicio del script, pero aseguramos la referencia
+    const btnSaveRitualTop = document.getElementById('btn-save-ritual-top');
+    
+    function saveRitualAction() {
+        let index = MOCK_RITUALES.findIndex(r => r.id === currentEditingRitualId);
+        
+        if (!currentEditingRitualId || index === -1) {
+            // Auto crear si no había nada seleccionado
+            const newId = Date.now();
+            currentEditingRitualId = newId;
+            const newRitual = { id: newId, titulo: '', descripcion: '', precio: '', fecha: '', imagen: '', image: '', categoria: 'Otros' };
+            MOCK_RITUALES.unshift(newRitual);
+            index = 0;
+        }
 
-            const fechaEl = document.getElementById('edit-ritual-fecha');
-            
-            MOCK_RITUALES[index] = {
-                ...MOCK_RITUALES[index],
-                titulo: document.getElementById('edit-ritual-titulo').value || 'Nueva Experiencia',
-                descripcion: document.getElementById('edit-ritual-desc').value,
-                duracion: document.getElementById('edit-ritual-duracion').value,
-                precio: document.getElementById('edit-ritual-precio').value,
-                fecha: fechaEl ? fechaEl.value : '',
-                imagen: document.getElementById('edit-ritual-imagen').value,
-                image: document.getElementById('edit-ritual-imagen').value
-            };
+        const tituloVal = document.getElementById('edit-ritual-titulo')?.value || 'Nueva Experiencia';
+        const descVal = document.getElementById('edit-ritual-desc')?.value || '';
+        const durVal = document.getElementById('edit-ritual-duracion')?.value || '';
+        const precVal = document.getElementById('edit-ritual-precio')?.value || '';
+        const fechaEl = document.getElementById('edit-ritual-fecha');
+        const imgVal = getDirectImgLink(document.getElementById('edit-ritual-imagen')?.value || '');
+        
+        MOCK_RITUALES[index] = {
+            ...MOCK_RITUALES[index],
+            titulo: tituloVal,
+            descripcion: descVal,
+            duracion: durVal,
+            precio: precVal,
+            fecha: fechaEl ? fechaEl.value : '',
+            imagen: imgVal,
+            image: imgVal
+        };
 
-            if(window.saveToCloud) window.saveToCloud('rituales', MOCK_RITUALES, RITUALES_STORAGE_KEY); else localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
-            showToast('Experiencia guardada correctamente');
-            renderAdminRituales();
-            renderRituales(); // Actualizar vista pública
-        });
+        if(window.saveToCloud) window.saveToCloud('rituales', MOCK_RITUALES, RITUALES_STORAGE_KEY); else localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
+        showToast('Experiencia guardada correctamente');
+        renderAdminRituales();
+        renderRituales(); // Actualizar vista pública
     }
+
+    if (btnSaveRitual) btnSaveRitual.addEventListener('click', saveRitualAction);
+    if (btnSaveRitualTop) btnSaveRitualTop.addEventListener('click', saveRitualAction);
 
     // --- LÓGICA DE TALLERES (CATÁLOGO) ---
     let currentEditingTallerItemId = null;
@@ -1657,10 +1732,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderTalleresCatalogo() {
         const container = document.getElementById('talleres-items-list');
         if (!container) return;
-        container.innerHTML = MOCK_TALLERES_CATALOGO.map(taller => `
+        container.innerHTML = MOCK_TALLERES_CATALOGO.map(taller => {
+            const displayImg = getDirectImgLink(taller.imagen);
+            return `
             <div class="bg-white border border-sand rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all flex flex-col group h-full">
                 <div class="aspect-video relative overflow-hidden">
-                    <img src="${taller.imagen}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="${taller.titulo}">
+                    <img src="${displayImg}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="${taller.titulo}">
                     <div class="absolute top-4 left-4">
                         <span class="px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-[10px] font-bold text-primary uppercase tracking-widest shadow-sm">Taller</span>
                     </div>
@@ -1678,7 +1755,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     function renderAdminTalleresCatalogo() {
@@ -1762,10 +1839,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const preview = document.getElementById('edit-taller-item-preview');
         const placeholder = document.getElementById('taller-preview-placeholder');
         if (!preview || !placeholder) return;
-        if (url && url.trim().length > 5) {
-            preview.src = url;
-            preview.classList.remove('opacity-0');
-            placeholder.classList.add('hidden');
+        
+        const directUrl = getDirectImgLink(url);
+        
+        if (directUrl && directUrl.length > 5) {
+            preview.src = directUrl;
+            preview.onload = () => {
+                preview.classList.remove('opacity-0');
+                placeholder.classList.add('hidden');
+            };
+            preview.onerror = () => {
+                preview.classList.add('opacity-0');
+                placeholder.classList.remove('hidden');
+            };
         } else {
             preview.classList.add('opacity-0');
             placeholder.classList.remove('hidden');
@@ -1776,36 +1862,60 @@ document.addEventListener('DOMContentLoaded', () => {
         editTallerItemImagen.addEventListener('input', (e) => {
             updateTallerItemPreview(e.target.value);
         });
+        // También al perder el foco, para limpiar el campo si es necesario
+        editTallerItemImagen.addEventListener('change', (e) => {
+            const converted = getDirectImgLink(e.target.value);
+            if (converted !== e.target.value) {
+                e.target.value = converted;
+            }
+        });
     }
 
     if (btnSaveTallerItem) {
         btnSaveTallerItem.addEventListener('click', () => {
-            let index = MOCK_TALLERES_CATALOGO.findIndex(t => t.id === currentEditingTallerItemId);
-            
-            if (!currentEditingTallerItemId || index === -1) {
-                // Auto crear si no había nada seleccionado
-                const newId = Date.now();
-                currentEditingTallerItemId = newId;
-                const newTaller = { id: newId, titulo: '', descripcion: '', precio: '', fecha: '', imagen: '' };
-                MOCK_TALLERES_CATALOGO.unshift(newTaller);
-                index = 0;
+            // Aseguramos obtener el ID actual
+            if (!currentEditingTallerItemId) {
+                showToast('Selecciona un taller para editar primero');
+                return;
             }
 
-            const fechaInput = document.getElementById('edit-taller-item-fecha');
+            let index = MOCK_TALLERES_CATALOGO.findIndex(t => t.id === currentEditingTallerItemId);
+            
+            if (index === -1) {
+                showToast('Error: No se encontró el taller seleccionado');
+                return;
+            }
 
+            const tituloVal = document.getElementById('edit-taller-item-titulo')?.value || 'Nuevo Taller';
+            const descVal = document.getElementById('edit-taller-item-desc')?.value || '';
+            const precioVal = document.getElementById('edit-taller-item-precio')?.value || '';
+            const fechaInput = document.getElementById('edit-taller-item-fecha');
+            const imgInput = document.getElementById('edit-taller-item-imagen');
+            const imgVal = imgInput ? getDirectImgLink(imgInput.value) : '';
+
+            // Actualizar objeto en memoria
             MOCK_TALLERES_CATALOGO[index] = {
                 ...MOCK_TALLERES_CATALOGO[index],
-                titulo: editTallerItemTitulo.value || 'Nuevo Taller',
-                descripcion: editTallerItemDesc.value,
-                precio: editTallerItemPrecio.value,
+                titulo: tituloVal,
+                descripcion: descVal,
+                precio: precioVal,
                 fecha: fechaInput ? fechaInput.value : '',
-                imagen: editTallerItemImagen.value
+                imagen: imgVal
             };
 
-            if(window.saveToCloud) window.saveToCloud('talleresCatalogo', MOCK_TALLERES_CATALOGO, TALLERES_CATALOGO_KEY); else localStorage.setItem(TALLERES_CATALOGO_KEY, JSON.stringify(MOCK_TALLERES_CATALOGO));
+            // Guardar
+            if(window.saveToCloud) {
+                window.saveToCloud('talleresCatalogo', MOCK_TALLERES_CATALOGO, TALLERES_CATALOGO_KEY);
+            } else {
+                localStorage.setItem(TALLERES_CATALOGO_KEY, JSON.stringify(MOCK_TALLERES_CATALOGO));
+            }
+
             showToast('Taller guardado correctamente');
             renderAdminTalleresCatalogo();
             renderTalleresCatalogo(); 
+            
+            // Actualizar el campo si se convirtió el enlace
+            if (imgInput) imgInput.value = imgVal;
         });
     }
 
@@ -2351,6 +2461,22 @@ document.addEventListener('DOMContentLoaded', () => {
             TALLERES_DATA = data;
             if (!isDrawing && !isDragging && !isResizing) {
                 renderTalleres();
+            }
+        });
+
+        // Sincronizar Imagen de Agenda (Faltaba)
+        setupFirebaseSync('scheduleImg', SCHEDULE_IMG_URL, SCHEDULE_IMG_STORAGE_KEY, (data) => {
+            if (typeof data === 'string') {
+                SCHEDULE_IMG_URL = data;
+                renderScheduleImage();
+            }
+        });
+
+        // Sincronizar QRs de Inicio (Faltaba)
+        setupFirebaseSync('homeQRs', HOME_QR_DATA, HOME_QR_STORAGE_KEY, (data) => {
+            if (data && typeof data === 'object') {
+                HOME_QR_DATA = data;
+                renderHomeQRs();
             }
         });
 

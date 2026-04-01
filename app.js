@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (trimUrl.includes('/d/')) {
                 id = trimUrl.split('/d/')[1].split('/')[0];
             }
-            if (id) return `https://drive.google.com/uc?id=${id}`;
+            if (id) return `https://lh3.googleusercontent.com/d/${id}`;
         }
         
         // Dropbox

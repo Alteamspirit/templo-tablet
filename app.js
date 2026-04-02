@@ -1226,24 +1226,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const tarjetasHTML = ritualesCategoria.map(ritual => `
-                <div onclick="window.openRitualDetail('${ritual.id}')" class="ritual-card bg-white border flex flex-col border-sand rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full cursor-pointer">
-                    <div class="h-48 md:h-56 w-full relative overflow-hidden bg-sand">
+                <div onclick="window.openRitualDetail('${ritual.id}')" class="ritual-card bg-black/20 backdrop-blur-sm border border-white/10 flex flex-col rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full cursor-pointer">
+                    <div class="h-48 md:h-56 w-full relative overflow-hidden bg-sand/10">
                         <div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style="background-image: url('${getDirectImgLink(ritual.image || ritual.imagen)}')"></div>
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
                             <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all text-4xl">add_circle</span>
                         </div>
                     </div>
                     <div class="p-6 md:p-8 flex flex-col flex-grow ritual-card-body">
-                        <h3 class="font-serif text-xl md:text-2xl font-bold text-slate-800 mb-2 ritual-card-title">${ritual.titulo}</h3>
-                        <p class="text-slate-500 text-sm md:text-base leading-relaxed mb-6 flex-grow line-clamp-3 ritual-card-desc">${ritual.descripcion}</p>
+                        <h3 class="font-serif text-xl md:text-2xl font-bold text-white mb-2 ritual-card-title">${ritual.titulo}</h3>
+                        <p class="text-white/50 text-sm md:text-base leading-relaxed mb-6 flex-grow line-clamp-3 ritual-card-desc">${ritual.descripcion}</p>
                         
-                        <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto ritual-card-footer">
+                        <div class="flex items-center justify-between border-t border-white/10 pt-4 mt-auto ritual-card-footer">
                             <div class="flex flex-col">
-                                <span class="text-xs font-bold text-zen-gray/80 uppercase tracking-widest ritual-label">Duración</span>
-                                <span class="text-slate-800 font-medium whitespace-nowrap ritual-value"><span class="material-symbols-outlined text-[16px] align-text-bottom mr-1 text-zen-gray">${ritual.fecha ? "calendar_today" : "schedule"}</span>${ritual.fecha || ritual.duracion}</span>
+                                <span class="text-xs font-bold text-white/40 uppercase tracking-widest ritual-label">Duración</span>
+                                <span class="text-white/80 font-medium whitespace-nowrap ritual-value"><span class="material-symbols-outlined text-[16px] align-text-bottom mr-1 text-white/30">${ritual.fecha ? "calendar_today" : "schedule"}</span>${ritual.fecha || ritual.duracion}</span>
                             </div>
                             <div class="flex flex-col text-right">
-                                <span class="text-xs font-bold text-zen-gray/80 uppercase tracking-widest ritual-label">Precio</span>
+                                <span class="text-xs font-bold text-white/40 uppercase tracking-widest ritual-label">Precio</span>
                                 <span class="text-primary font-bold text-lg">${ritual.precio}</span>
                             </div>
                         </div>

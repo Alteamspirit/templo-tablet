@@ -181,7 +181,16 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 'b7', categoria: "DEPILACIÓN", titulo: "DISEÑO DE CEJAS", descripcion: "Estudio de visajismo personalizado para realzar tu mirada de forma natural y equilibrada.", duracion: "20 min", precio: "15,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/PESTANAS-1024x1024.png" },
       { id: 'b8', categoria: "DEPILACIÓN", titulo: "LÁSER DIODO CUERPO COMPLETO", descripcion: "Tecnología avanzada para la eliminación progresiva del vello de forma segura y eficaz.", duracion: "60 min", precio: "150,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/LASER-1024x1024.png" },
       { id: 'b9', categoria: "BELLEZA & MIRADA", titulo: "LIFTING DE PESTAÑAS", descripcion: "Tratamiento para curvar y alargar tus propias pestañas de forma natural desde la raíz.", duracion: "45 min", precio: "45,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/PESTANAS-1024x1024.png" },
-      { id: 'b10', categoria: "BELLEZA & MIRADA", titulo: "MICROPIGMENTACIÓN", descripcion: "Maquillaje semipermanente diseñado para resaltar tus rasgos naturales en cejas, ojos o labios.", duracion: "120 min", precio: "250,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/MICRO-1024x1024.png" }
+      // --- MICROPIGMENTACIÓN (REEMPLAZO GENÉRICO POR 9 ESPECIALIZADOS) ---
+      { id: 'm1', categoria: "MICROPIGMENTACIÓN", titulo: "MICRO EYELINER", descripcion: "Intensifica tu mirada con un eyeliner permanente que realza la forma natural de tus ojos con trazos sutiles.", duracion: "90 min", precio: "250,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/07/OJOS-229x300.png" },
+      { id: 'm2', categoria: "MICROPIGMENTACIÓN", titulo: "MICRO LABIOS", descripcion: "Realzamos la forma, el color y el volumen de tus labios, corrigiendo asimetrías con un acabado natural.", duracion: "120 min", precio: "400,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/07/LABIOS-229x300.png" },
+      { id: 'm3', categoria: "MICROPIGMENTACIÓN", titulo: "MICRO CEJAS", descripcion: "Diseño natural y simétrico con un acabado hiperrealista que realza tu esencia.", duracion: "120 min", precio: "350,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/07/CEJAS-229x300.png" },
+      { id: 'm4', categoria: "MICROPIGMENTACIÓN", titulo: "MICRO PECAS", descripcion: "Pecas creadas con delicadeza para aportar frescura y un toque juvenil único a tu rostro.", duracion: "45 min", precio: "250,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/07/PECAS-229x300.png" },
+      { id: 'm5', categoria: "MICROPIGMENTACIÓN", titulo: "AREOLA SIMPLE", descripcion: "Reconstrucción oncológica de una sola areola con delicadeza para recuperar tu seguridad.", duracion: "90 min", precio: "250,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/07/AREOLA-SIMPLE-229x300.png" },
+      { id: 'm6', categoria: "MICROPIGMENTACIÓN", titulo: "AREOLA DOBLE", descripcion: "Reconstrucción de ambas areolas para recuperar la imagen esencial de tu pecho.", duracion: "150 min", precio: "350,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/07/AREOLA-DOBLE-229x300.png" },
+      { id: 'm7', categoria: "MICROPIGMENTACIÓN", titulo: "MICRO CAPILAR", descripcion: "Recupera la sensación de densidad capilar disimulando cicatrices o zonas despobladas.", duracion: "Consulta", precio: "Presupuesto", imagen: "https://zenestetic.com/wp-content/uploads/2025/07/CAPILAR-229x300.png" },
+      { id: 'm8', categoria: "MICROPIGMENTACIÓN", titulo: "CORRECCIÓN TRABAJOS", descripcion: "Corregimos forma, color y técnica de experiencias previas no esperadas.", duracion: "Consulta", precio: "Presupuesto", imagen: "https://zenestetic.com/wp-content/uploads/2025/07/CORRECCIONES-229x300.png" },
+      { id: 'm9', categoria: "MICROPIGMENTACIÓN", titulo: "CONSULTA PREVIA", descripcion: "Sesión esencial para pruebas de diseño, color y sensibilidad antes del tratamiento.", duracion: "30 min", precio: "50,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/07/CONSULTA-229x300.png" }
     ];
 
     let currentRitualType = 'templo'; // 'templo' o 'belleza'
@@ -1220,7 +1229,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 "CUIDADO DE MANOS": "https://zenestetic.com/wp-content/uploads/2025/08/CUIDADO-DE-MANOS-1024x576.png",
                 "CUIDADO DE PIES": "https://zenestetic.com/wp-content/uploads/2025/08/CUIDADO-DE-PIES-1024x576.png",
                 "DEPILACIÓN": "https://zenestetic.com/wp-content/uploads/2025/08/DEPILACION-1024x576.png",
-                "BELLEZA & MIRADA": "https://zenestetic.com/wp-content/uploads/2025/08/PESTANAS-1024x1024.png"
+                "BELLEZA & MIRADA": "https://zenestetic.com/wp-content/uploads/2025/08/PESTANAS-1024x1024.png",
+                "MICROPIGMENTACIÓN": "https://zenestetic.com/wp-content/uploads/2025/07/MICROPIGMENTACION-1024x576.png"
             };
             bannerImg = bellezaBanners[cat] || 'https://zenestetic.com/wp-content/uploads/2025/08/BELLEZA-1024x576.png';
             }

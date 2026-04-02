@@ -1029,25 +1029,25 @@ document.addEventListener('DOMContentLoaded', () => {
             detailContainer.classList.add('opacity-0');
             setTimeout(() => {
                 detailContainer.innerHTML = `
-                    <div class="animate-fade-in">
-                        <div class="flex flex-col items-center text-center mb-8">
-                            <div class="size-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
-                                <span class="material-symbols-outlined text-primary text-3xl">event_available</span>
+                    <div class="animate-fade-in w-full">
+                        <div class="flex flex-col items-center text-center mb-4">
+                            <div class="size-12 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                                <span class="material-symbols-outlined text-primary text-2xl">event_available</span>
                             </div>
-                            <h3 class="text-2xl font-serif font-bold text-slate-800 mb-2">${taller.titulo}</h3>
-                            <span class="px-4 py-1 bg-sand text-zen-gray text-xs font-bold rounded-full uppercase tracking-widest">${taller.fecha}</span>
+                            <h3 class="text-xl font-serif font-bold text-slate-800 mb-1 leading-tight">${taller.titulo}</h3>
+                            <span class="px-3 py-0.5 bg-sand text-zen-gray text-[10px] font-bold rounded-full uppercase tracking-widest">${taller.fecha}</span>
                         </div>
                         
-                        <div class="bg-slate-50 rounded-2xl p-6 mb-8 border border-sand/50">
-                            <p class="text-slate-600 leading-relaxed text-lg italic serif-text">"${taller.descripcion}"</p>
+                        <div class="bg-slate-50 rounded-xl p-4 mb-4 border border-sand/30 w-full">
+                            <p class="text-slate-600 leading-snug text-base italic serif-text">"${taller.descripcion}"</p>
                         </div>
 
-                        <div class="flex flex-col items-center p-8 bg-white border border-sand rounded-2xl shadow-sm">
-                            <h4 class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">Escanea para Inscribirte</h4>
-                            <div class="p-4 bg-white border border-sand rounded-xl shadow-inner mb-4">
-                                <img src="${qrSrc}" alt="QR Inscripción" class="size-40 md:size-48 object-contain">
+                        <div class="flex flex-col items-center p-5 bg-white border border-sand rounded-xl shadow-sm w-full">
+                            <h4 class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Escanea para Inscribirte</h4>
+                            <div class="p-3 bg-white border border-sand rounded-lg shadow-inner mb-2">
+                                <img src="${qrSrc}" alt="QR Inscripción" class="size-32 md:size-36 object-contain">
                             </div>
-                            <p class="text-[10px] text-zen-gray/60 uppercase font-medium">Inscripción segura vía web</p>
+                            <p class="text-[9px] text-zen-gray/60 uppercase font-medium">Inscripción segura vía web</p>
                         </div>
                     </div>
                 `;

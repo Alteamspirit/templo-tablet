@@ -1258,10 +1258,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="category-banner" style="background-image: ${bannerImg ? `url('${bannerImg}')` : 'none'}"></div>
                         <div class="relative z-10 flex items-center justify-between w-full">
                             <div class="flex flex-col">
-                                <span class="${currentRitualType === 'templo' ? 'text-white/70' : 'text-[#39280F]/50'} text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-1 category-pretitle">Descubre</span>
-                                <h2 class="${currentRitualType === 'templo' ? 'text-white' : 'text-[#39280F]'} text-2xl md:text-4xl font-light tracking-[0.1em] uppercase category-title">${cat}</h2>
+                                <span class="text-white/70 text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-1 category-pretitle">Descubre</span>
+                                <h2 class="text-white text-2x1 md:text-4xl font-light tracking-[0.1em] uppercase category-title">${cat}</h2>
                             </div>
-                            <div class="size-10 md:size-14 rounded-full border ${currentRitualType === 'templo' ? 'border-white/30 text-white' : 'border-[#39280F]/20 text-[#39280F]'} flex items-center justify-center accordion-icon">
+                            <div class="size-10 md:size-14 rounded-full border border-white/30 text-white flex items-center justify-center accordion-icon">
                                 <span class="material-symbols-outlined text-2xl md:text-3xl">expand_more</span>
                             </div>
                         </div>

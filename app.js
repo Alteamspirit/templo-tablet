@@ -108,12 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let SCHEDULE_IMG_URL = localStorage.getItem(SCHEDULE_IMG_STORAGE_KEY) || "agenda/Marzo 26.jpeg";
 
     const CATEGORY_BANNERS = {
-        "HOLISTIC AYURVEDA": "", // Will be white
-        "KIZUNA": "",
-        "KAO ZEN": "",
-        "KEISACOS": "",
-        "SAMSKARA": "",
-        "NAGARE": ""
+        "HOLISTIC AYURVEDA": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/HOLISTIC-SHIRODHARA-819x1024.png",
+        "KIZUNA": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/DUO-KITO-819x1024.png",
+        "KAO ZEN": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/KAO-CAMINO-ZEN-819x1024.png",
+        "KEISACOS": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/KEISACO-ASHI-819x1024.png",
+        "SAMSKARA": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/SAMSKARA-KIKAI-819x1024.png",
+        "NAGARE": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/NAGARE-MADERO-PRANA-819x1024.png"
     };
 
     let MOCK_RITUALES = JSON.parse(localStorage.getItem(RITUALES_STORAGE_KEY)) || [
@@ -1255,13 +1255,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="w-full flex flex-col category-section" data-category="${cat}">
                     <!-- Cabecera Categoría (Botón Acordeón) -->
                     <div class="category-header flex items-center px-6 md:px-10 group" onclick="toggleAccordion('${cat}')">
-                        <div class="category-banner ${currentRitualType === 'templo' ? 'banner-white' : ''}" style="background-image: ${bannerImg ? `url('${bannerImg}')` : 'none'}"></div>
+                        <div class="category-banner" style="background-image: ${bannerImg ? `url('${bannerImg}')` : 'none'}"></div>
                         <div class="relative z-10 flex items-center justify-between w-full">
                             <div class="flex flex-col">
-                                <span class="text-[#39280F]/50 text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-1 category-pretitle">Descubre</span>
-                                <h2 class="text-2xl md:text-4xl font-light tracking-[0.1em] uppercase text-[#39280F] category-title">${cat}</h2>
+                                <span class="${currentRitualType === 'templo' ? 'text-white/70' : 'text-[#39280F]/50'} text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-1 category-pretitle">Descubre</span>
+                                <h2 class="${currentRitualType === 'templo' ? 'text-white' : 'text-[#39280F]'} text-2xl md:text-4xl font-light tracking-[0.1em] uppercase category-title">${cat}</h2>
                             </div>
-                            <div class="size-10 md:size-14 rounded-full border border-[#39280F]/20 flex items-center justify-center text-[#39280F] accordion-icon">
+                            <div class="size-10 md:size-14 rounded-full border ${currentRitualType === 'templo' ? 'border-white/30 text-white' : 'border-[#39280F]/20 text-[#39280F]'} flex items-center justify-center accordion-icon">
                                 <span class="material-symbols-outlined text-2xl md:text-3xl">expand_more</span>
                             </div>
                         </div>

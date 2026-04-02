@@ -138,16 +138,13 @@
 
         /* Estilos Paneles y Transiciones Suaves */
         .content-panel-layer, .admin-panel-layer, #dni-modal, #pin-modal {
-            background-color: #ffffff;
+            background-color: #0c0c0c !important;
             z-index: 300;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.5s ease-out, transform 0.5s ease-out !important;
             transform: scale(1.01);
             display: flex !important;
-        }
-
-        .content-panel-layer, .admin-panel-layer, #dni-modal, #pin-modal {
             position: fixed;
             inset: 0;
             overflow-y: auto;
@@ -174,15 +171,15 @@
             padding-top: env(safe-area-inset-top, 1.5rem);
             padding-bottom: 1rem;
             margin-bottom: 2rem;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             position: sticky;
             top: 0;
-            background: white;
+            background: rgba(12, 12, 12, 0.95);
+            backdrop-filter: blur(10px);
             z-index: 50;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
+            display: flex;
             align-items: center;
-            gap: 1rem;
+            justify-content: space-between;
         }
 
         .header-logo-internal {
@@ -465,10 +462,10 @@
     <div class="relative flex w-full flex-col p-4 md:p-6 lg:p-8">
         <header class="panel-header mb-4">
             <div class="flex items-center gap-4">
-                <button id="btn-volver-citas" class="p-2 -m-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                <button id="btn-volver-citas" class="p-2 -m-2 hover:bg-white/10 rounded-full transition-colors text-white/70">
                     <span class="material-symbols-outlined text-3xl">arrow_back</span>
                 </button>
-                <h2 class="panel-title text-slate-800">Únete</h2>
+                <h2 class="panel-title text-white">Únete</h2>
             </div>
             <img src="https://eltemplobyzenestetic.es/wp-content/uploads/2022/10/LOGOTIPO-EL-TEMPLO-2-1536x867.png" class="header-logo-internal" alt="Logo Internal">
             <div class="flex justify-end items-center">
@@ -477,8 +474,8 @@
         </header>
 
             <div class="mb-6 text-center max-w-3xl mx-auto">
-                <h2 class="text-2xl md:text-4xl font-serif font-black text-secondary leading-tight mb-2 uppercase tracking-tighter">Únete a la Experiencia</h2>
-                <p class="text-zen-gray italic serif-text text-base leading-relaxed">"Ayurveda, la sabiduría de la vida, nos regala la posibilidad de alcanzar tu equilibrio y belleza verdadera."</p>
+                <h2 class="text-2xl md:text-4xl font-serif font-black text-primary leading-tight mb-2 uppercase tracking-tighter">Únete a la Experiencia</h2>
+                <p class="text-white/60 italic serif-text text-base leading-relaxed">"Ayurveda, la sabiduría de la vida, nos regala la posibilidad de alcanzar tu equilibrio y belleza verdadera."</p>
             </div>
             <div id="qr-grid-container" style="display: flex; flex-wrap: nowrap; justify-content: space-evenly; align-items: center; width: 100%; gap: 12px; overflow: visible;" class="opacity-0 translate-y-4 transition-all duration-700 max-w-[1280px] mx-auto px-4 pb-4">
                 <!-- Dynamic QRs from app.js will be rendered here -->
@@ -537,10 +534,10 @@
     <div class="relative flex w-full flex-col p-2 md:p-4 lg:p-6">
         <header class="panel-header">
             <div class="flex items-center gap-4">
-                <button id="btn-volver-talleres" class="p-2 -m-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                <button id="btn-volver-talleres" class="p-2 -m-2 hover:bg-white/10 rounded-full transition-colors text-white/70">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </button>
-                <h2 class="panel-title text-slate-800">Clases</h2>
+                <h2 class="panel-title text-white">Clases</h2>
             </div>
             <img src="https://eltemplobyzenestetic.es/wp-content/uploads/2022/10/LOGOTIPO-EL-TEMPLO-2-1536x867.png" class="header-logo-internal" alt="Logo Internal">
             <div class="flex justify-end items-center">
@@ -594,10 +591,10 @@
     <div class="relative flex w-full flex-col p-4 md:p-8 lg:p-12">
         <header class="panel-header">
             <div class="flex items-center gap-4">
-                <button id="btn-volver-clases" class="p-2 -m-2 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                <button id="btn-volver-clases" class="p-2 -m-2 hover:bg-white/10 rounded-full transition-colors text-white/70">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </button>
-                <h2 class="panel-title text-slate-800">Talleres</h2>
+                <h2 class="panel-title text-white">Talleres</h2>
             </div>
             <img src="https://eltemplobyzenestetic.es/wp-content/uploads/2022/10/LOGOTIPO-EL-TEMPLO-2-1536x867.png" class="header-logo-internal" alt="Logo Internal">
             <div class="flex justify-end items-center">
@@ -1097,7 +1094,7 @@
         </main>
         
         <footer class="mt-auto px-4 md:px-8 py-4 border-t border-slate-200 text-slate-400 text-[10px] md:text-xs flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
-            <p>© 2024 Admin Panel - Sistema de Gestión Multimedia <span class="bg-slate-800 text-white px-2 py-0.5 rounded-full ml-2 opacity-50">v4.2</span></p>
+            <p>© 2024 Admin Panel - Sistema de Gestión Multimedia <span class="bg-slate-800 text-white px-2 py-0.5 rounded-full ml-2 opacity-50">v4.3</span></p>
             <div class="flex gap-4">
                 <a class="hover:text-primary" href="#">Manual de Usuario</a>
                 <a class="hover:text-primary" href="#">Soporte Técnico</a>
@@ -1167,5 +1164,5 @@
     </div>
 </div>
 
-<script src="app.js?v=4.2"></script>
+<script src="app.js?v=4.3"></script>
 </body></html>

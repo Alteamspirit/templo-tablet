@@ -532,7 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- LÓGICA DE HORARIOS / AGENDA ---
     function renderScheduleImage() {
-        const scheduleImg = document.getElementById('schedule-main-img');
+        const scheduleImg = document.getElementById('schedule-img');
         const adminScheduleImg = document.getElementById('admin-schedule-img');
         const scheduleInput = document.getElementById('edit-schedule-img-url');
         

@@ -232,78 +232,36 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         }
 
-        /* --- THEME BELLEZA ZEN (Light) --- */
-        #rituales-panel.theme-belleza {
-            background-color: #F7F3ED !important;
-            background-image: radial-gradient(circle at top right, rgba(235, 224, 212, 0.5), transparent);
-        }
-
-        .theme-belleza .panel-header {
-            background: rgba(247, 243, 237, 0.9) !important;
-            border-bottom-color: rgba(191, 177, 163, 0.2);
-        }
-        
-        .theme-belleza .panel-title {
-            color: #5D4D40 !important;
-        }
-
-        .theme-belleza .ritual-card {
-            background: #ffffff !important;
-            border-color: rgba(191, 177, 163, 0.2) !important;
-        }
-
-        .theme-belleza .ritual-card-title {
-            color: #4A3B2F !important;
-        }
-
-        .theme-belleza .ritual-card-desc {
-            color: #7A6F66 !important;
-        }
-
-        .theme-belleza .ritual-label {
-            color: rgba(122, 111, 102, 0.6) !important;
-        }
-
-        .theme-belleza .ritual-value {
-            color: #4A3B2F !important;
-        }
-
-        /* --- TABS SYSTEM --- */
+        /* --- TABS SYSTEM (Unified Dark) --- */
         .tabs-container {
             display: flex;
-            background: rgba(0, 0, 0, 0.1);
-            padding: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px;
             border-radius: 100px;
-            margin: 1rem auto 3rem;
+            margin: 1.5rem auto 3.5rem;
             width: fit-content;
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .theme-belleza .tabs-container {
-            background: rgba(191, 177, 163, 0.15);
-            border-color: rgba(191, 177, 163, 0.2);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(191, 177, 163, 0.2);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
         }
 
         .tab-btn {
-            padding: 0.75rem 2rem;
+            padding: 0.85rem 2.5rem;
             border-radius: 100px;
-            font-size: 0.85rem;
-            font-weight: 700;
+            font-size: 0.9rem;
+            font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.15em;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            color: white;
-            opacity: 0.6;
-        }
-
-        .theme-belleza .tab-btn {
-            color: #7A6F66;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            color: rgba(255, 255, 255, 0.4);
+            border: 1px solid transparent;
+            cursor: pointer;
         }
 
         .tab-btn.tab-active {
-            opacity: 1;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+            /* bg-primary se aplica via JS/Tailwind, pero definimos sombra aqui */
+            box-shadow: 0 0 20px rgba(191, 177, 163, 0.4);
         }
     </style>
 </head>
@@ -555,10 +513,10 @@
 
         <!-- Tabs Navigation -->
         <div class="tabs-container">
-            <button id="tab-rituales-templo" onclick="window.switchRitualType('templo')" class="tab-btn tab-active bg-primary text-white">
+            <button id="tab-rituales-templo" onclick="window.switchRitualType('templo')" class="tab-btn tab-active bg-primary text-white shadow-[0_0_15px_rgba(191,177,163,0.3)] border-white/20">
                 Bienestar Zen
             </button>
-            <button id="tab-rituales-belleza" onclick="window.switchRitualType('belleza')" class="tab-btn bg-white/10 text-white/60">
+            <button id="tab-rituales-belleza" onclick="window.switchRitualType('belleza')" class="tab-btn bg-white/5 text-white/40 border-transparent">
                 Belleza & Estética
             </button>
         </div>
@@ -1139,7 +1097,7 @@
         </main>
         
         <footer class="mt-auto px-4 md:px-8 py-4 border-t border-slate-200 text-slate-400 text-[10px] md:text-xs flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
-            <p>© 2024 Admin Panel - Sistema de Gestión Multimedia <span class="bg-slate-800 text-white px-2 py-0.5 rounded-full ml-2 opacity-50">v4.0</span></p>
+            <p>© 2024 Admin Panel - Sistema de Gestión Multimedia <span class="bg-slate-800 text-white px-2 py-0.5 rounded-full ml-2 opacity-50">v4.1</span></p>
             <div class="flex gap-4">
                 <a class="hover:text-primary" href="#">Manual de Usuario</a>
                 <a class="hover:text-primary" href="#">Soporte Técnico</a>
@@ -1209,5 +1167,5 @@
     </div>
 </div>
 
-<script src="app.js?v=4.0"></script>
+<script src="app.js?v=4.1"></script>
 </body></html>

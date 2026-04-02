@@ -172,16 +172,16 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let BELLEZA_DATA = [
-      { id: 'b1', categoria: "CUIDADO DE MANOS", titulo: "RITUAL SHAMA MANOS", descripcion: "Manos que reflejan tu esencia, cuidadas con el alma en una experiencia de desconexión profunda.", duracion: "50 min", precio: "55,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/RITUAL-SHAMA-MANOS.jpg" },
-      { id: 'b2', categoria: "CUIDADO DE MANOS", titulo: "BELLEZA SEMIPERMANENTE", descripcion: "Esmaltado de larga duración con productos de alta calidad para un acabado impecable y duradero.", duracion: "45 min", precio: "26,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/MANICURA-SEMIPERMANENTE-ALICANTE-ZEN-ESTETIC.jpg" },
-      { id: 'b3', categoria: "CUIDADO DE MANOS", titulo: "BELLEZA DE MANOS", descripcion: "Tratamiento completo de cuidado y embellecimiento de uñas y piel para lucir unas manos perfectas.", duracion: "30 min", precio: "18,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/MANICURA-ALICANTE-ZEN-ESTETIC.jpg" },
-      { id: 'b4', categoria: "CUIDADO DE PIES", titulo: "RITUAL SHAMA PIES", descripcion: "Un viaje de ligereza. Reconecta con la tierra a través de un tratamiento profundo y relajante.", duracion: "60 min", precio: "65,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/RITUAL-SHAMA-PIES.jpg" },
-      { id: 'b5', categoria: "CUIDADO DE PIES", titulo: "BELLEZA DE PIES", descripcion: "Cuidado básico y estético para que tus pies descansen, se regeneren y luzcan impecables.", duracion: "45 min", precio: "30,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/PEDICURA-ALICANTE-ZEN-ESTETIC.jpg" },
-      { id: 'b6', categoria: "CUIDADO DE PIES", titulo: "BELLEZA SEMIPERMANENTE PIES", descripcion: "Durabilidad y brillo para tus pies con esmaltado semipermanente de máxima calidad.", duracion: "50 min", precio: "36,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/PEDICURA-SEMIPERMANENTE-ALICANTE-ZEN-ESTETIC.jpg" },
-      { id: 'b7', categoria: "DEPILACIÓN", titulo: "DISEÑO DE CEJAS", descripcion: "Estudio de visajismo personalizado para realzar tu mirada de forma natural y equilibrada.", duracion: "20 min", precio: "15,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/DISEÑO-DE-CEJAS-ALICANTE.jpg" },
-      { id: 'b8', categoria: "DEPILACIÓN", titulo: "LÁSER DIODO CUERPO COMPLETO", descripcion: "Tecnología avanzada para la eliminación progresiva del vello de forma segura y eficaz.", duracion: "60 min", precio: "150,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/DEPILACION-LASER-ALICANTE.jpg" },
-      { id: 'b9', categoria: "BELLEZA & MIRADA", titulo: "LIFTING DE PESTAÑAS", descripcion: "Tratamiento para curvar y alargar tus propias pestañas de forma natural desde la raíz.", duracion: "45 min", precio: "45,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/LIFTING-DE-PESTAÑAS-ALICANTE.jpg" },
-      { id: 'b10', categoria: "BELLEZA & MIRADA", titulo: "MICROPIGMENTACIÓN", descripcion: "Maquillaje semipermanente diseñado para resaltar tus rasgos naturales en cejas, ojos o labios.", duracion: "120 min", precio: "250,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/MICROPIGMENTACION-ALICANTE.jpg" }
+      { id: 'b1', categoria: "CUIDADO DE MANOS", titulo: "RITUAL SHAMA MANOS", descripcion: "Manos que reflejan tu esencia, cuidadas con el alma en una experiencia de desconexión profunda.", duracion: "50 min", precio: "55,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/SHAMA-MANOS-1024x1024.png" },
+      { id: 'b2', categoria: "CUIDADO DE MANOS", titulo: "BELLEZA SEMIPERMANENTE", descripcion: "Esmaltado de larga duración con productos de alta calidad para un acabado impecable y duradero.", duracion: "45 min", precio: "26,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/ESMALTADO-SEMIPERMANENTE-1024x1024.png" },
+      { id: 'b3', categoria: "CUIDADO DE MANOS", titulo: "BELLEZA DE MANOS", descripcion: "Tratamiento completo de cuidado y embellecimiento de uñas y piel para lucir unas manos perfectas.", duracion: "30 min", precio: "18,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/BELLEZA-DE-MANOS-1024x1024.png" },
+      { id: 'b4', categoria: "CUIDADO DE PIES", titulo: "RITUAL SHAMA PIES", descripcion: "Un viaje de ligereza. Reconecta con la tierra a través de un tratamiento profundo y relajante.", duracion: "60 min", precio: "65,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/SHAMA-PIES-1024x1024.png" },
+      { id: 'b5', categoria: "CUIDADO DE PIES", titulo: "BELLEZA DE PIES", descripcion: "Cuidado básico y estético para que tus pies descansen, se regeneren y luzcan impecables.", duracion: "45 min", precio: "30,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/BELLEZA-DE-PIES-1-1024x1024.png" },
+      { id: 'b6', categoria: "CUIDADO DE PIES", titulo: "BELLEZA SEMIPERMANENTE PIES", descripcion: "Durabilidad y brillo para tus pies con esmaltado semipermanente de máxima calidad.", duracion: "50 min", precio: "36,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/SEMIPERMANENTE-PIES-1024x1024.png" },
+      { id: 'b7', categoria: "DEPILACIÓN", titulo: "DISEÑO DE CEJAS", descripcion: "Estudio de visajismo personalizado para realzar tu mirada de forma natural y equilibrada.", duracion: "20 min", precio: "15,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/PESTANAS-1024x1024.png" },
+      { id: 'b8', categoria: "DEPILACIÓN", titulo: "LÁSER DIODO CUERPO COMPLETO", descripcion: "Tecnología avanzada para la eliminación progresiva del vello de forma segura y eficaz.", duracion: "60 min", precio: "150,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/LASER-1024x1024.png" },
+      { id: 'b9', categoria: "BELLEZA & MIRADA", titulo: "LIFTING DE PESTAÑAS", descripcion: "Tratamiento para curvar y alargar tus propias pestañas de forma natural desde la raíz.", duracion: "45 min", precio: "45,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/PESTANAS-1024x1024.png" },
+      { id: 'b10', categoria: "BELLEZA & MIRADA", titulo: "MICROPIGMENTACIÓN", descripcion: "Maquillaje semipermanente diseñado para resaltar tus rasgos naturales en cejas, ojos o labios.", duracion: "120 min", precio: "250,00€", imagen: "https://zenestetic.com/wp-content/uploads/2025/08/MICRO-1024x1024.png" }
     ];
 
     let currentRitualType = 'templo'; // 'templo' o 'belleza'
@@ -1200,13 +1200,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = (currentRitualType === 'templo') ? MOCK_RITUALES : BELLEZA_DATA;
         const panel = document.getElementById('rituales-panel');
         
-        // Aplicar/Quitar tema Belleza
+        // Mantener siempre el tema oscuro original de El Templo
         if (panel) {
-            if (currentRitualType === 'belleza') {
-                panel.classList.add('theme-belleza');
-            } else {
-                panel.classList.remove('theme-belleza');
-            }
+            panel.classList.remove('theme-belleza');
         }
 
         const categoriasArr = [...new Set(data.map(r => r.categoria))];
@@ -1293,19 +1289,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnBelleza = document.getElementById('tab-rituales-belleza');
         
         if (type === 'templo') {
-            btnTemplo.classList.add('tab-active');
-            btnBelleza.classList.remove('tab-active');
-            btnTemplo.classList.add('bg-primary', 'text-white');
-            btnTemplo.classList.remove('bg-white/10', 'text-white/60');
-            btnBelleza.classList.add('bg-white/10', 'text-white/60');
-            btnBelleza.classList.remove('bg-primary', 'text-white');
+            btnTemplo.classList.add('tab-active', 'bg-primary', 'text-white', 'shadow-[0_0_15px_rgba(191,177,163,0.3)]', 'border-white/20');
+            btnTemplo.classList.remove('bg-white/5', 'text-white/40', 'border-transparent');
+            btnBelleza.classList.add('bg-white/5', 'text-white/40', 'border-transparent');
+            btnBelleza.classList.remove('tab-active', 'bg-primary', 'text-white', 'shadow-[0_0_15px_rgba(191,177,163,0.3)]', 'border-white/20');
         } else {
-            btnTemplo.classList.remove('tab-active');
-            btnBelleza.classList.add('tab-active');
-            btnBelleza.classList.add('bg-primary', 'text-white');
-            btnBelleza.classList.remove('bg-white/10', 'text-white/60');
-            btnTemplo.classList.add('bg-white/10', 'text-white/60');
-            btnTemplo.classList.remove('bg-primary', 'text-white');
+            btnBelleza.classList.add('tab-active', 'bg-primary', 'text-white', 'shadow-[0_0_15px_rgba(191,177,163,0.3)]', 'border-white/20');
+            btnBelleza.classList.remove('bg-white/5', 'text-white/40', 'border-transparent');
+            btnTemplo.classList.add('bg-white/5', 'text-white/40', 'border-transparent');
+            btnTemplo.classList.remove('tab-active', 'bg-primary', 'text-white', 'shadow-[0_0_15px_rgba(191,177,163,0.3)]', 'border-white/20');
         }
         
         // Re-renderizar con animación de desvanecimiento

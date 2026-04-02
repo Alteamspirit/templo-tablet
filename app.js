@@ -1120,6 +1120,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- LÓGICA DETALLE RITUALES (MODAL) ---
+    window.openRitualDetail = function(id) {
+        const ritual = MOCK_RITUALES.find(r => r.id == id);
+        if (!ritual) return;
+
+        const modal = document.getElementById('ritual-detail-modal');
+        const img = document.getElementById('ritual-modal-img');
+        const titulo = document.getElementById('ritual-modal-titulo');
+        const cat = document.getElementById('ritual-modal-categoria');
+        const dur = document.getElementById('ritual-modal-duracion');
+        const prec = document.getElementById('ritual-modal-precio');
+        const desc = document.getElementById('ritual-modal-descripcion');
+        const qr = document.getElementById('ritual-modal-qr');
+
+        if (!modal || !img || !titulo || !cat || !dur || !prec || !desc || !qr) return;
+
+        // Limpiar para animación
+        img.src = '';
+        qr.src = '';
+
+        // Cargar Datos
+        img.src = getDirectImgLink(ritual.image || ritual.imagen);
+        titulo.textContent = ritual.titulo;
+        cat.textContent = ritual.categoria;
+        dur.textContent = ritual.fecha || ritual.duracion;
+        prec.textContent = ritual.precio;
+        desc.textContent = ritual.descripcion;
+
+        // Generar URL de compra (Slug dinámico basado en título)
+        // Ejemplo: "Holistic Abhyanga" -> "holistic-abhyanga"
+        const slug = ritual.titulo
+            .toLowerCase()
+            .trim()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Quitar acentos
+            .replace(/&/g, 'y')
+            .replace(/[^\w\s-]/g, '') // Quitar caracteres raros
+            .replace(/\s+/g, '-') // Espacios a guiones
+            .replace(/-+/g, '-'); // Quitar guiones duplicados
+        
+        const purchaseUrl = `https://eltemplobyzenestetic.es/producto/${slug}/`;
+        qr.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(purchaseUrl)}`;
+
+        modal.classList.remove('hidden');
+        document.body.classList.add('no-scroll');
+    };
+
+    window.closeRitualDetail = function() {
+        const modal = document.getElementById('ritual-detail-modal');
+        if (modal) modal.classList.add('hidden');
+        if (!document.querySelector('.panel-active')) {
+            document.body.classList.remove('no-scroll');
+        }
+    };
+
+    const btnCerrarRitualModal = document.getElementById('btn-cerrar-ritual-modal');
+    if (btnCerrarRitualModal) btnCerrarRitualModal.onclick = window.closeRitualDetail;
+
     function renderRituales() {
         if (!ritualesListContainer) return;
         ritualesListContainer.innerHTML = '';
@@ -1131,13 +1188,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const bannerImg = CATEGORY_BANNERS[cat] || 'https://eltemplobyzenestetic.es/wp-content/uploads/2023/11/MASAJES-AYURVEDA-ALICANTE-4.webp';
             
             const tarjetasHTML = ritualesCategoria.map(ritual => `
-                <div class="bg-white border flex flex-col border-sand rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 group h-full">
+                <div onclick="window.openRitualDetail('${ritual.id}')" class="bg-white border flex flex-col border-sand rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full cursor-pointer">
                     <div class="h-48 md:h-56 w-full relative overflow-hidden bg-sand">
-                        <div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style="background-image: url('${ritual.image || ritual.imagen}')"></div>
+                        <div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style="background-image: url('${getDirectImgLink(ritual.image || ritual.imagen)}')"></div>
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                            <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all text-4xl">add_circle</span>
+                        </div>
                     </div>
                     <div class="p-6 md:p-8 flex flex-col flex-grow">
                         <h3 class="font-serif text-xl md:text-2xl font-bold text-slate-800 mb-2">${ritual.titulo}</h3>
-                        <p class="text-slate-500 text-sm md:text-base leading-relaxed mb-6 flex-grow">${ritual.descripcion}</p>
+                        <p class="text-slate-500 text-sm md:text-base leading-relaxed mb-6 flex-grow line-clamp-3">${ritual.descripcion}</p>
                         
                         <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
                             <div class="flex flex-col">

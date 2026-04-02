@@ -220,6 +220,17 @@
         #banner-container {
             aspect-ratio: 21/5 !important;
         }
+        /* Modal Detalle Ritual */
+        #ritual-detail-modal {
+            z-index: 500;
+            background-color: rgba(245, 241, 238, 0.95);
+            backdrop-filter: blur(12px);
+        }
+        .modal-glass {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(191, 177, 163, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
     </style>
 </head>
 <body class="bg-background-light text-slate-900 selection:bg-primary/30 h-screen overflow-hidden">
@@ -1044,7 +1055,7 @@
         </main>
         
         <footer class="mt-auto px-4 md:px-8 py-4 border-t border-slate-200 text-slate-400 text-[10px] md:text-xs flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
-            <p>© 2024 Admin Panel - Sistema de Gestión Multimedia <span class="bg-slate-800 text-white px-2 py-0.5 rounded-full ml-2 opacity-50">v3.8</span></p>
+            <p>© 2024 Admin Panel - Sistema de Gestión Multimedia <span class="bg-slate-800 text-white px-2 py-0.5 rounded-full ml-2 opacity-50">v3.9</span></p>
             <div class="flex gap-4">
                 <a class="hover:text-primary" href="#">Manual de Usuario</a>
                 <a class="hover:text-primary" href="#">Soporte Técnico</a>
@@ -1058,5 +1069,61 @@
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-<script src="app.js?v=3.8"></script>
+<!-- ========================================== -->
+<!-- === RITUAL DETAIL MODAL (Hidden) ========= -->
+<!-- ========================================== -->
+<div id="ritual-detail-modal" class="fixed inset-0 hidden flex items-center justify-center p-4 md:p-8">
+    <div class="modal-glass w-full max-w-5xl max-h-[90vh] rounded-3xl overflow-hidden flex flex-col md:flex-row relative animate-fade-in shadow-2xl">
+        <!-- Close Button -->
+        <button id="btn-cerrar-ritual-modal" class="absolute top-4 right-4 z-10 size-10 bg-white/80 backdrop-blur rounded-full flex items-center justify-center hover:bg-white shadow-sm transition-all">
+            <span class="material-symbols-outlined text-slate-800">close</span>
+        </button>
+
+        <!-- Image side (40%) -->
+        <div class="w-full md:w-5/12 h-64 md:h-auto relative overflow-hidden">
+            <img id="ritual-modal-img" src="" class="w-full h-full object-cover" alt="Ritual Image">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent md:hidden"></div>
+        </div>
+
+        <!-- Info side (60%) -->
+        <div class="w-full md:w-7/12 p-6 md:p-10 flex flex-col overflow-y-auto">
+            <div class="mb-6">
+                <span id="ritual-modal-categoria" class="inline-block px-3 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded-full uppercase tracking-widest mb-3">CATEGORIA</span>
+                <h2 id="ritual-modal-titulo" class="text-3xl md:text-4xl font-serif font-bold text-slate-800 leading-tight">Título del Ritual</h2>
+                <div class="flex items-center gap-6 mt-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">schedule</span>
+                        <span id="ritual-modal-duracion" class="text-sm font-medium text-slate-600">60 min</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">payments</span>
+                        <span id="ritual-modal-precio" class="text-lg font-bold text-slate-800">120,00€</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-grow">
+                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Sobre la Experiencia</h4>
+                <p id="ritual-modal-descripcion" class="text-slate-600 leading-relaxed text-lg italic serif-text mb-8">
+                    "Una descripción detallada y profesional del tratamiento."
+                </p>
+            </div>
+
+            <div class="mt-auto pt-6 border-t border-sand flex flex-col sm:flex-row items-center gap-8 bg-sand/30 -mx-6 -mb-6 p-8 md:rounded-tl-3xl">
+                <div class="flex flex-col items-center">
+                    <div class="p-3 bg-white border border-sand rounded-xl shadow-inner mb-2">
+                        <img id="ritual-modal-qr" src="" class="size-28 md:size-32 object-contain" alt="Purchase QR">
+                    </div>
+                    <p class="text-[9px] text-zen-gray/60 uppercase font-bold tracking-widest">Escanea para Comprar</p>
+                </div>
+                <div class="flex flex-col text-center sm:text-left">
+                    <h5 class="text-sm font-bold text-slate-800 mb-1">Reserva y Compra Online</h5>
+                    <p class="text-xs text-slate-500 max-w-xs leading-relaxed">Puedes adquirir esta experiencia ahora mismo desde tu dispositivo y disfrutarla cuando desees.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="app.js?v=3.9"></script>
 </body></html>

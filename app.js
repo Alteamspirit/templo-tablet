@@ -1226,25 +1226,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const tarjetasHTML = ritualesCategoria.map(ritual => `
-                <div onclick="window.openRitualDetail('${ritual.id}')" class="ritual-card bg-black/20 backdrop-blur-sm border border-white/10 flex flex-col rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full cursor-pointer">
-                    <div class="h-48 md:h-56 w-full relative overflow-hidden bg-sand/10">
+                <div onclick="window.openRitualDetail('${ritual.id}')" class="ritual-card bg-[#F2E5D6] border border-[#39280F]/10 flex flex-col rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full cursor-pointer">
+                    <div class="h-48 md:h-56 w-full relative overflow-hidden bg-[#E4D7C5]/30">
                         <div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style="background-image: url('${getDirectImgLink(ritual.image || ritual.imagen)}')"></div>
-                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all flex items-center justify-center">
                             <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all text-4xl">add_circle</span>
                         </div>
                     </div>
                     <div class="p-6 md:p-8 flex flex-col flex-grow ritual-card-body">
-                        <h3 class="font-serif text-xl md:text-2xl font-bold text-white mb-2 ritual-card-title">${ritual.titulo}</h3>
-                        <p class="text-white/50 text-sm md:text-base leading-relaxed mb-6 flex-grow line-clamp-3 ritual-card-desc">${ritual.descripcion}</p>
+                        <h3 class="font-serif text-xl md:text-2xl font-bold text-[#39280F] mb-2 ritual-card-title">${ritual.titulo}</h3>
+                        <p class="text-[#39280F]/60 text-sm md:text-base leading-relaxed mb-6 flex-grow line-clamp-3 ritual-card-desc">${ritual.descripcion}</p>
                         
-                        <div class="flex items-center justify-between border-t border-white/10 pt-4 mt-auto ritual-card-footer">
+                        <div class="flex items-center justify-between border-t border-[#39280F]/5 pt-4 mt-auto ritual-card-footer">
                             <div class="flex flex-col">
-                                <span class="text-xs font-bold text-white/40 uppercase tracking-widest ritual-label">Duración</span>
-                                <span class="text-white/80 font-medium whitespace-nowrap ritual-value"><span class="material-symbols-outlined text-[16px] align-text-bottom mr-1 text-white/30">${ritual.fecha ? "calendar_today" : "schedule"}</span>${ritual.fecha || ritual.duracion}</span>
+                                <span class="text-xs font-bold text-[#39280F]/40 uppercase tracking-widest ritual-label">Duración</span>
+                                <span class="text-[#39280F]/80 font-medium whitespace-nowrap ritual-value"><span class="material-symbols-outlined text-[16px] align-text-bottom mr-1 text-[#39280F]/30">${ritual.fecha ? "calendar_today" : "schedule"}</span>${ritual.fecha || ritual.duracion}</span>
                             </div>
                             <div class="flex flex-col text-right">
-                                <span class="text-xs font-bold text-white/40 uppercase tracking-widest ritual-label">Precio</span>
-                                <span class="text-primary font-bold text-lg">${ritual.precio}</span>
+                                <span class="text-xs font-bold text-[#39280F]/40 uppercase tracking-widest ritual-label">Precio</span>
+                                <span class="text-[#39280F] font-bold text-lg">${ritual.precio}</span>
                             </div>
                         </div>
                     </div>
@@ -1258,10 +1258,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="category-banner" style="background-image: url('${bannerImg}')"></div>
                         <div class="relative z-10 flex items-center justify-between w-full">
                             <div class="flex flex-col">
-                                <span class="text-white/60 text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-1 category-pretitle">Descubre</span>
-                                <h2 class="text-2xl md:text-4xl font-light tracking-[0.1em] uppercase text-white category-title">${cat}</h2>
+                                <span class="text-[#39280F]/50 text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-1 category-pretitle">Descubre</span>
+                                <h2 class="text-2xl md:text-4xl font-light tracking-[0.1em] uppercase text-[#39280F] category-title">${cat}</h2>
                             </div>
-                            <div class="size-10 md:size-14 rounded-full border border-white/30 flex items-center justify-center text-white accordion-icon">
+                            <div class="size-10 md:size-14 rounded-full border border-[#39280F]/20 flex items-center justify-center text-[#39280F] accordion-icon">
                                 <span class="material-symbols-outlined text-2xl md:text-3xl">expand_more</span>
                             </div>
                         </div>
@@ -1289,15 +1289,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnBelleza = document.getElementById('tab-rituales-belleza');
         
         if (type === 'templo') {
-            btnTemplo.classList.add('tab-active', 'bg-primary', 'text-white', 'shadow-[0_0_15px_rgba(191,177,163,0.3)]', 'border-white/20');
-            btnTemplo.classList.remove('bg-white/5', 'text-white/40', 'border-transparent');
-            btnBelleza.classList.add('bg-white/5', 'text-white/40', 'border-transparent');
-            btnBelleza.classList.remove('tab-active', 'bg-primary', 'text-white', 'shadow-[0_0_15px_rgba(191,177,163,0.3)]', 'border-white/20');
+            btnTemplo.style.backgroundColor = '#39280F';
+            btnTemplo.style.color = '#E4D7C5';
+            btnBelleza.style.backgroundColor = 'transparent';
+            btnBelleza.style.color = 'rgba(57, 40, 15, 0.5)';
         } else {
-            btnBelleza.classList.add('tab-active', 'bg-primary', 'text-white', 'shadow-[0_0_15px_rgba(191,177,163,0.3)]', 'border-white/20');
-            btnBelleza.classList.remove('bg-white/5', 'text-white/40', 'border-transparent');
-            btnTemplo.classList.add('bg-white/5', 'text-white/40', 'border-transparent');
-            btnTemplo.classList.remove('tab-active', 'bg-primary', 'text-white', 'shadow-[0_0_15px_rgba(191,177,163,0.3)]', 'border-white/20');
+            btnBelleza.style.backgroundColor = '#39280F';
+            btnBelleza.style.color = '#E4D7C5';
+            btnTemplo.style.backgroundColor = 'transparent';
+            btnTemplo.style.color = 'rgba(57, 40, 15, 0.5)';
         }
         
         // Re-renderizar con animación de desvanecimiento

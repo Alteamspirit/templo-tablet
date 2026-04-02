@@ -21,9 +21,9 @@
                 extend: {
                     colors: {
                         "primary": "#BFB1A3",
-                        "secondary": "#423218",
+                        "secondary": "#39280F",
                         "accent": "#D4AF37",
-                        "sand": "#F5F1EE",
+                        "sand": "#E4D7C5",
                         "zen-gray": "#5C4538",
                     },
                     fontFamily: {
@@ -43,9 +43,9 @@
 <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-sand, #F5F1EE);
+            background-color: #E4D7C5;
             background-image: radial-gradient(circle at 50% 50%, rgba(191, 177, 163, 0.05) 0%, transparent 100%);
-            color: #423218;
+            color: #39280F;
         }
         .serif-text {
             font-family: 'Belleza', serif;
@@ -138,7 +138,7 @@
 
         /* Estilos Paneles y Transiciones Suaves */
         .content-panel-layer, .admin-panel-layer, #dni-modal, #pin-modal {
-            background-color: #0c0c0c !important;
+            background-color: #E4D7C5 !important;
             z-index: 300;
             opacity: 0;
             pointer-events: none;
@@ -171,10 +171,10 @@
             padding-top: env(safe-area-inset-top, 1.5rem);
             padding-bottom: 1rem;
             margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(57, 40, 15, 0.1);
             position: sticky;
             top: 0;
-            background: rgba(12, 12, 12, 0.95);
+            background: rgba(228, 215, 197, 0.95);
             backdrop-filter: blur(10px);
             z-index: 50;
             display: flex;
@@ -229,36 +229,36 @@
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
         }
 
-        /* --- TABS SYSTEM (Unified Dark) --- */
+        /* --- TABS SYSTEM (Corporate Templo) --- */
         .tabs-container {
             display: flex;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(57, 40, 15, 0.05);
             padding: 6px;
             border-radius: 100px;
             margin: 1.5rem auto 3.5rem;
             width: fit-content;
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(191, 177, 163, 0.2);
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(57, 40, 15, 0.15);
+            box-shadow: 0 10px 30px -10px rgba(57, 40, 15, 0.2);
         }
 
         .tab-btn {
             padding: 0.85rem 2.5rem;
             border-radius: 100px;
-            font-size: 0.9rem;
+            font-size: 0.90rem;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(57, 40, 15, 0.5);
             border: 1px solid transparent;
             cursor: pointer;
         }
 
         .tab-btn.tab-active {
-            color: #ffffff;
-            /* bg-primary se aplica via JS/Tailwind, pero definimos sombra aqui */
-            box-shadow: 0 0 20px rgba(191, 177, 163, 0.4);
+            color: #E4D7C5;
+            background: #39280F; /* Color chocolate corporativo */
+            box-shadow: 0 5px 15px rgba(57, 40, 15, 0.3);
         }
     </style>
 </head>
@@ -462,10 +462,10 @@
     <div class="relative flex w-full flex-col p-4 md:p-6 lg:p-8">
         <header class="panel-header mb-4">
             <div class="flex items-center gap-4">
-                <button id="btn-volver-citas" class="p-2 -m-2 hover:bg-white/10 rounded-full transition-colors text-white/70">
+                <button id="btn-volver-citas" class="p-2 -m-2 hover:bg-black/5 rounded-full transition-colors text-secondary/70">
                     <span class="material-symbols-outlined text-3xl">arrow_back</span>
                 </button>
-                <h2 class="panel-title text-white">Únete</h2>
+                <h2 class="panel-title text-secondary">Únete</h2>
             </div>
             <img src="https://eltemplobyzenestetic.es/wp-content/uploads/2022/10/LOGOTIPO-EL-TEMPLO-2-1536x867.png" class="header-logo-internal" alt="Logo Internal">
             <div class="flex justify-end items-center">
@@ -497,10 +497,10 @@
     <div class="relative flex w-full flex-col p-4 md:p-8 lg:p-12">
         <header class="panel-header">
             <div class="flex items-center gap-4">
-                <button id="btn-volver-rituales" class="p-2 -m-2 hover:bg-white/10 rounded-full transition-colors text-white/70">
+                <button id="btn-volver-rituales" class="p-2 -m-2 hover:bg-black/5 rounded-full transition-colors text-secondary/70">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </button>
-                <h2 class="panel-title text-white">Experiencias</h2>
+                <h2 class="panel-title text-secondary">Experiencias</h2>
             </div>
             <img src="https://eltemplobyzenestetic.es/wp-content/uploads/2022/10/LOGOTIPO-EL-TEMPLO-2-1536x867.png" class="header-logo-internal" alt="Logo Internal">
             <div class="flex justify-end items-center">
@@ -510,10 +510,10 @@
 
         <!-- Tabs Navigation -->
         <div class="tabs-container">
-            <button id="tab-rituales-templo" onclick="window.switchRitualType('templo')" class="tab-btn tab-active bg-primary text-white shadow-[0_0_15px_rgba(191,177,163,0.3)] border-white/20">
+            <button id="tab-rituales-templo" onclick="window.switchRitualType('templo')" class="tab-btn tab-active bg-[#39280F] text-[#E4D7C5]">
                 Bienestar Zen
             </button>
-            <button id="tab-rituales-belleza" onclick="window.switchRitualType('belleza')" class="tab-btn bg-white/5 text-white/40 border-transparent">
+            <button id="tab-rituales-belleza" onclick="window.switchRitualType('belleza')" class="tab-btn">
                 Belleza & Estética
             </button>
         </div>
@@ -1094,7 +1094,7 @@
         </main>
         
         <footer class="mt-auto px-4 md:px-8 py-4 border-t border-slate-200 text-slate-400 text-[10px] md:text-xs flex flex-col md:flex-row justify-between items-center gap-2 md:gap-0">
-            <p>© 2024 Admin Panel - Sistema de Gestión Multimedia <span class="bg-slate-800 text-white px-2 py-0.5 rounded-full ml-2 opacity-50">v4.3</span></p>
+            <p>© 2024 Admin Panel - Sistema de Gestión Multimedia <span class="bg-slate-800 text-white px-2 py-0.5 rounded-full ml-2 opacity-50">v5.0</span></p>
             <div class="flex gap-4">
                 <a class="hover:text-primary" href="#">Manual de Usuario</a>
                 <a class="hover:text-primary" href="#">Soporte Técnico</a>
@@ -1164,5 +1164,5 @@
     </div>
 </div>
 
-<script src="app.js?v=4.3"></script>
+<script src="app.js?v=5.0"></script>
 </body></html>

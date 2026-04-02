@@ -171,6 +171,21 @@ document.addEventListener('DOMContentLoaded', () => {
       { id: 52, categoria: "NAGARE", titulo: "NAGARE DETOX", descripcion: "Un masaje manual que activa el sistema linfático, deshincha y purifica el cuerpo.", duracion: "60 min", precio: "75,00€", imagen: "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/NAGARE-DETOX.png" }
     ];
 
+    let BELLEZA_DATA = [
+      { id: 'b1', categoria: "CUIDADO DE MANOS", titulo: "RITUAL SHAMA MANOS", descripcion: "Manos que reflejan tu esencia, cuidadas con el alma en una experiencia de desconexión profunda.", duracion: "50 min", precio: "55,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/RITUAL-SHAMA-MANOS.jpg" },
+      { id: 'b2', categoria: "CUIDADO DE MANOS", titulo: "BELLEZA SEMIPERMANENTE", descripcion: "Esmaltado de larga duración con productos de alta calidad para un acabado impecable y duradero.", duracion: "45 min", precio: "26,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/MANICURA-SEMIPERMANENTE-ALICANTE-ZEN-ESTETIC.jpg" },
+      { id: 'b3', categoria: "CUIDADO DE MANOS", titulo: "BELLEZA DE MANOS", descripcion: "Tratamiento completo de cuidado y embellecimiento de uñas y piel para lucir unas manos perfectas.", duracion: "30 min", precio: "18,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/MANICURA-ALICANTE-ZEN-ESTETIC.jpg" },
+      { id: 'b4', categoria: "CUIDADO DE PIES", titulo: "RITUAL SHAMA PIES", descripcion: "Un viaje de ligereza. Reconecta con la tierra a través de un tratamiento profundo y relajante.", duracion: "60 min", precio: "65,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/RITUAL-SHAMA-PIES.jpg" },
+      { id: 'b5', categoria: "CUIDADO DE PIES", titulo: "BELLEZA DE PIES", descripcion: "Cuidado básico y estético para que tus pies descansen, se regeneren y luzcan impecables.", duracion: "45 min", precio: "30,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/PEDICURA-ALICANTE-ZEN-ESTETIC.jpg" },
+      { id: 'b6', categoria: "CUIDADO DE PIES", titulo: "BELLEZA SEMIPERMANENTE PIES", descripcion: "Durabilidad y brillo para tus pies con esmaltado semipermanente de máxima calidad.", duracion: "50 min", precio: "36,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/PEDICURA-SEMIPERMANENTE-ALICANTE-ZEN-ESTETIC.jpg" },
+      { id: 'b7', categoria: "DEPILACIÓN", titulo: "DISEÑO DE CEJAS", descripcion: "Estudio de visajismo personalizado para realzar tu mirada de forma natural y equilibrada.", duracion: "20 min", precio: "15,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/DISEÑO-DE-CEJAS-ALICANTE.jpg" },
+      { id: 'b8', categoria: "DEPILACIÓN", titulo: "LÁSER DIODO CUERPO COMPLETO", descripcion: "Tecnología avanzada para la eliminación progresiva del vello de forma segura y eficaz.", duracion: "60 min", precio: "150,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/DEPILACION-LASER-ALICANTE.jpg" },
+      { id: 'b9', categoria: "BELLEZA & MIRADA", titulo: "LIFTING DE PESTAÑAS", descripcion: "Tratamiento para curvar y alargar tus propias pestañas de forma natural desde la raíz.", duracion: "45 min", precio: "45,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/LIFTING-DE-PESTAÑAS-ALICANTE.jpg" },
+      { id: 'b10', categoria: "BELLEZA & MIRADA", titulo: "MICROPIGMENTACIÓN", descripcion: "Maquillaje semipermanente diseñado para resaltar tus rasgos naturales en cejas, ojos o labios.", duracion: "120 min", precio: "250,00€", imagen: "https://zenestetic.com/wp-content/uploads/2024/09/MICROPIGMENTACION-ALICANTE.jpg" }
+    ];
+
+    let currentRitualType = 'templo'; // 'templo' o 'belleza'
+
     let TALLERES_DATA = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
         {
             id: 'pilates-semanal',
@@ -1122,7 +1137,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- LÓGICA DETALLE RITUALES (MODAL) ---
     window.openRitualDetail = function(id) {
-        const ritual = MOCK_RITUALES.find(r => r.id == id);
+        const data = (currentRitualType === 'templo') ? MOCK_RITUALES : BELLEZA_DATA;
+        const ritual = data.find(r => r.id == id);
         if (!ritual) return;
 
         const modal = document.getElementById('ritual-detail-modal');
@@ -1181,31 +1197,57 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!ritualesListContainer) return;
         ritualesListContainer.innerHTML = '';
         
-        const categoriasArr = [...new Set(MOCK_RITUALES.map(r => r.categoria))];
+        const data = (currentRitualType === 'templo') ? MOCK_RITUALES : BELLEZA_DATA;
+        const panel = document.getElementById('rituales-panel');
+        
+        // Aplicar/Quitar tema Belleza
+        if (panel) {
+            if (currentRitualType === 'belleza') {
+                panel.classList.add('theme-belleza');
+            } else {
+                panel.classList.remove('theme-belleza');
+            }
+        }
+
+        const categoriasArr = [...new Set(data.map(r => r.categoria))];
         
         categoriasArr.forEach((cat, index) => {
-            const ritualesCategoria = MOCK_RITUALES.filter(r => r.categoria === cat);
-            const bannerImg = CATEGORY_BANNERS[cat] || 'https://eltemplobyzenestetic.es/wp-content/uploads/2023/11/MASAJES-AYURVEDA-ALICANTE-4.webp';
+            const ritualesCategoria = data.filter(r => r.categoria === cat);
+            
+            // Determinar banner de categoría
+            let bannerImg = '';
+            if (currentRitualType === 'templo') {
+                bannerImg = CATEGORY_BANNERS[cat] || 'https://eltemplobyzenestetic.es/wp-content/uploads/2023/11/MASAJES-AYURVEDA-ALICANTE-4.webp';
+            } else {
+                // Banner genérico o específico para belleza
+                const bellezaBanners = {
+                    "CUIDADO DE MANOS": "https://zenestetic.com/wp-content/uploads/2023/11/manicura-alicante.jpg",
+                    "CUIDADO DE PIES": "https://zenestetic.com/wp-content/uploads/2023/11/pedicura-alicante.jpg",
+                    "DEPILACIÓN": "https://zenestetic.com/wp-content/uploads/2023/11/depilacion-laser-alicante.jpg",
+                    "BELLEZA & MIRADA": "https://zenestetic.com/wp-content/uploads/2023/11/microblading-alicante.jpg"
+                };
+                bannerImg = bellezaBanners[cat] || 'https://zenestetic.com/wp-content/uploads/2023/11/belleza-zen-banner.jpg';
+            }
             
             const tarjetasHTML = ritualesCategoria.map(ritual => `
-                <div onclick="window.openRitualDetail('${ritual.id}')" class="bg-white border flex flex-col border-sand rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full cursor-pointer">
+                <div onclick="window.openRitualDetail('${ritual.id}')" class="ritual-card bg-white border flex flex-col border-sand rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group h-full cursor-pointer">
                     <div class="h-48 md:h-56 w-full relative overflow-hidden bg-sand">
                         <div class="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style="background-image: url('${getDirectImgLink(ritual.image || ritual.imagen)}')"></div>
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
                             <span class="material-symbols-outlined text-white opacity-0 group-hover:opacity-100 transform scale-50 group-hover:scale-100 transition-all text-4xl">add_circle</span>
                         </div>
                     </div>
-                    <div class="p-6 md:p-8 flex flex-col flex-grow">
-                        <h3 class="font-serif text-xl md:text-2xl font-bold text-slate-800 mb-2">${ritual.titulo}</h3>
-                        <p class="text-slate-500 text-sm md:text-base leading-relaxed mb-6 flex-grow line-clamp-3">${ritual.descripcion}</p>
+                    <div class="p-6 md:p-8 flex flex-col flex-grow ritual-card-body">
+                        <h3 class="font-serif text-xl md:text-2xl font-bold text-slate-800 mb-2 ritual-card-title">${ritual.titulo}</h3>
+                        <p class="text-slate-500 text-sm md:text-base leading-relaxed mb-6 flex-grow line-clamp-3 ritual-card-desc">${ritual.descripcion}</p>
                         
-                        <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
+                        <div class="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto ritual-card-footer">
                             <div class="flex flex-col">
-                                <span class="text-xs font-bold text-zen-gray/80 uppercase tracking-widest">Duración</span>
-                                <span class="text-slate-800 font-medium whitespace-nowrap"><span class="material-symbols-outlined text-[16px] align-text-bottom mr-1 text-zen-gray">${ritual.fecha ? "calendar_today" : "schedule"}</span>${ritual.fecha || ritual.duracion}</span>
+                                <span class="text-xs font-bold text-zen-gray/80 uppercase tracking-widest ritual-label">Duración</span>
+                                <span class="text-slate-800 font-medium whitespace-nowrap ritual-value"><span class="material-symbols-outlined text-[16px] align-text-bottom mr-1 text-zen-gray">${ritual.fecha ? "calendar_today" : "schedule"}</span>${ritual.fecha || ritual.duracion}</span>
                             </div>
                             <div class="flex flex-col text-right">
-                                <span class="text-xs font-bold text-zen-gray/80 uppercase tracking-widest">Precio</span>
+                                <span class="text-xs font-bold text-zen-gray/80 uppercase tracking-widest ritual-label">Precio</span>
                                 <span class="text-primary font-bold text-lg">${ritual.precio}</span>
                             </div>
                         </div>
@@ -1214,14 +1256,14 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
             
             const itemHTML = `
-                <div class="w-full flex flex-col" data-category="${cat}">
+                <div class="w-full flex flex-col category-section" data-category="${cat}">
                     <!-- Cabecera Categoría (Botón Acordeón) -->
                     <div class="category-header flex items-center px-6 md:px-10 group" onclick="toggleAccordion('${cat}')">
                         <div class="category-banner" style="background-image: url('${bannerImg}')"></div>
                         <div class="relative z-10 flex items-center justify-between w-full">
                             <div class="flex flex-col">
-                                <span class="text-white/60 text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-1">Descubre</span>
-                                <h2 class="text-2xl md:text-4xl font-light tracking-[0.1em] uppercase text-white">${cat}</h2>
+                                <span class="text-white/60 text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-1 category-pretitle">Descubre</span>
+                                <h2 class="text-2xl md:text-4xl font-light tracking-[0.1em] uppercase text-white category-title">${cat}</h2>
                             </div>
                             <div class="size-10 md:size-14 rounded-full border border-white/30 flex items-center justify-center text-white accordion-icon">
                                 <span class="material-symbols-outlined text-2xl md:text-3xl">expand_more</span>
@@ -1240,6 +1282,43 @@ document.addEventListener('DOMContentLoaded', () => {
             ritualesListContainer.insertAdjacentHTML('beforeend', itemHTML);
         });
     }
+
+    // --- LÓGICA DE PESTAÑAS (Templo vs Belleza) ---
+    window.switchRitualType = function(type) {
+        if (type === currentRitualType) return;
+        currentRitualType = type;
+        
+        // Actualizar UI de pestañas
+        const btnTemplo = document.getElementById('tab-rituales-templo');
+        const btnBelleza = document.getElementById('tab-rituales-belleza');
+        
+        if (type === 'templo') {
+            btnTemplo.classList.add('tab-active');
+            btnBelleza.classList.remove('tab-active');
+            btnTemplo.classList.add('bg-primary', 'text-white');
+            btnTemplo.classList.remove('bg-white/10', 'text-white/60');
+            btnBelleza.classList.add('bg-white/10', 'text-white/60');
+            btnBelleza.classList.remove('bg-primary', 'text-white');
+        } else {
+            btnTemplo.classList.remove('tab-active');
+            btnBelleza.classList.add('tab-active');
+            btnBelleza.classList.add('bg-primary', 'text-white');
+            btnBelleza.classList.remove('bg-white/10', 'text-white/60');
+            btnTemplo.classList.add('bg-white/10', 'text-white/60');
+            btnTemplo.classList.remove('bg-primary', 'text-white');
+        }
+        
+        // Re-renderizar con animación de desvanecimiento
+        if (ritualesListContainer) {
+            ritualesListContainer.classList.add('opacity-0');
+            setTimeout(() => {
+                renderRituales();
+                ritualesListContainer.classList.remove('opacity-0');
+                const panel = document.getElementById('rituales-panel');
+                if (panel) panel.scrollTo({top: 0, behavior: 'smooth'});
+            }, 300);
+        }
+    };
 
     // Función global para manejar el acordeón con scroll sincronizado
     window.toggleAccordion = function(categoryName) {

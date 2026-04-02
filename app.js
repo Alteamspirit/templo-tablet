@@ -1230,7 +1230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 "CUIDADO DE PIES": "https://zenestetic.com/wp-content/uploads/2025/08/CUIDADO-DE-PIES-1024x576.png",
                 "DEPILACIÓN": "https://zenestetic.com/wp-content/uploads/2025/08/DEPILACION-1024x576.png",
                 "BELLEZA & MIRADA": "https://zenestetic.com/wp-content/uploads/2025/08/PESTANAS-1024x1024.png",
-                "MICROPIGMENTACIÓN": "https://zenestetic.com/wp-content/uploads/2025/07/MICROPIGMENTACION-1024x576.png"
+                "MICROPIGMENTACIÓN": "https://zenestetic.com/wp-content/uploads/2025/07/18-1024x576.png"
             };
             bannerImg = bellezaBanners[cat] || 'https://zenestetic.com/wp-content/uploads/2025/08/BELLEZA-1024x576.png';
             }

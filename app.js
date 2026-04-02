@@ -1011,6 +1011,18 @@ document.addEventListener('DOMContentLoaded', () => {
             activeBtn.classList.add('border-primary', 'bg-primary/5', 'shadow-md');
         }
 
+        // Determinar el origen del QR (Imagen vs Link a Generar)
+        const qrRaw = (taller.qr || '').trim();
+        let qrSrc = getDirectImgLink(qrRaw);
+        
+        // Si no es un enlace directo de imagen (Drive/Dropbox) y parece una URL, generamos el QR
+        const isImageUrl = qrRaw.match(/\.(jpeg|jpg|gif|png|webp|svg)/i);
+        const isDriveOrDropbox = qrRaw.includes('drive.google.com') || qrRaw.includes('dropbox.com') || qrRaw.includes('lh3.googleusercontent.com');
+
+        if (qrRaw && !isImageUrl && !isDriveOrDropbox && qrRaw.startsWith('http')) {
+            qrSrc = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrRaw)}`;
+        }
+
         // Actualizar Panel de Detalles
         const detailContainer = document.getElementById('taller-detalle-content');
         if (detailContainer) {
@@ -1033,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="flex flex-col items-center p-8 bg-white border border-sand rounded-2xl shadow-sm">
                             <h4 class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">Escanea para Inscribirte</h4>
                             <div class="p-4 bg-white border border-sand rounded-xl shadow-inner mb-4">
-                                <img src="${getDirectImgLink(taller.qr)}" alt="QR Inscripción" class="size-40 md:size-48 object-contain">
+                                <img src="${qrSrc}" alt="QR Inscripción" class="size-40 md:size-48 object-contain">
                             </div>
                             <p class="text-[10px] text-zen-gray/60 uppercase font-medium">Inscripción segura vía web</p>
                         </div>

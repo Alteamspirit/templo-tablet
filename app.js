@@ -932,7 +932,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (key === 'titulo') TALLERES_DATA[index].titulo = val;
                 else if (key === 'fecha') TALLERES_DATA[index].fecha = val;
                 else if (key === 'desc') TALLERES_DATA[index].descripcion = val;
-                else if (key === 'qr') TALLERES_DATA[index].qr = val;
+                else if (key === 'qr') TALLERES_DATA[index].qr = getDirectImgLink(val);
                 else {
                     const numVal = parseFloat(val) || 0;
                     if (key === 'top') TALLERES_DATA[index].hotspots[0].top = numVal;
@@ -975,7 +975,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     TALLERES_DATA[index].titulo = document.getElementById('edit-taller-titulo').value;
                     TALLERES_DATA[index].fecha = document.getElementById('edit-taller-fecha').value;
                     TALLERES_DATA[index].descripcion = document.getElementById('edit-taller-desc').value;
-                    TALLERES_DATA[index].qr = document.getElementById('edit-taller-qr').value;
+                    TALLERES_DATA[index].qr = getDirectImgLink(document.getElementById('edit-taller-qr').value);
 
                     const topVal = parseFloat(document.getElementById('edit-taller-top').value);
                     const leftVal = parseFloat(document.getElementById('edit-taller-left').value);
@@ -1033,7 +1033,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="flex flex-col items-center p-8 bg-white border border-sand rounded-2xl shadow-sm">
                             <h4 class="text-sm font-bold text-slate-400 uppercase tracking-[0.2em] mb-6">Escanea para Inscribirte</h4>
                             <div class="p-4 bg-white border border-sand rounded-xl shadow-inner mb-4">
-                                <img src="${taller.qr}" alt="QR Inscripción" class="size-40 md:size-48 object-contain">
+                                <img src="${getDirectImgLink(taller.qr)}" alt="QR Inscripción" class="size-40 md:size-48 object-contain">
                             </div>
                             <p class="text-[10px] text-zen-gray/60 uppercase font-medium">Inscripción segura vía web</p>
                         </div>

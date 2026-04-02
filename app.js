@@ -108,12 +108,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let SCHEDULE_IMG_URL = localStorage.getItem(SCHEDULE_IMG_STORAGE_KEY) || "agenda/Marzo 26.jpeg";
 
     const CATEGORY_BANNERS = {
-        "HOLISTIC AYURVEDA": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/HOLISTIC-SHIRODHARA-819x1024.png",
-        "KIZUNA": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/DUO-KITO-819x1024.png",
-        "KAO ZEN": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/KAO-CAMINO-ZEN-819x1024.png",
-        "KEISACOS": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/KEISACO-ASHI-819x1024.png",
-        "SAMSKARA": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/SAMSKARA-KIKAI-819x1024.png",
-        "NAGARE": "https://eltemplobyzenestetic.es/wp-content/uploads/2025/12/NAGARE-MADERO-PRANA-819x1024.png"
+        "HOLISTIC AYURVEDA": "", // Will be white
+        "KIZUNA": "",
+        "KAO ZEN": "",
+        "KEISACOS": "",
+        "SAMSKARA": "",
+        "NAGARE": ""
     };
 
     let MOCK_RITUALES = JSON.parse(localStorage.getItem(RITUALES_STORAGE_KEY)) || [
@@ -1216,13 +1216,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 bannerImg = CATEGORY_BANNERS[cat] || 'https://eltemplobyzenestetic.es/wp-content/uploads/2023/11/MASAJES-AYURVEDA-ALICANTE-4.webp';
             } else {
                 // Banner genérico o específico para belleza
-                const bellezaBanners = {
-                    "CUIDADO DE MANOS": "https://zenestetic.com/wp-content/uploads/2023/11/manicura-alicante.jpg",
-                    "CUIDADO DE PIES": "https://zenestetic.com/wp-content/uploads/2023/11/pedicura-alicante.jpg",
-                    "DEPILACIÓN": "https://zenestetic.com/wp-content/uploads/2023/11/depilacion-laser-alicante.jpg",
-                    "BELLEZA & MIRADA": "https://zenestetic.com/wp-content/uploads/2023/11/microblading-alicante.jpg"
-                };
-                bannerImg = bellezaBanners[cat] || 'https://zenestetic.com/wp-content/uploads/2023/11/belleza-zen-banner.jpg';
+            const bellezaBanners = {
+                "CUIDADO DE MANOS": "https://zenestetic.com/wp-content/uploads/2025/08/CUIDADO-DE-MANOS-1024x576.png",
+                "CUIDADO DE PIES": "https://zenestetic.com/wp-content/uploads/2025/08/CUIDADO-DE-PIES-1024x576.png",
+                "DEPILACIÓN": "https://zenestetic.com/wp-content/uploads/2025/08/DEPILACION-1024x576.png",
+                "BELLEZA & MIRADA": "https://zenestetic.com/wp-content/uploads/2025/08/PESTANAS-1024x1024.png"
+            };
+            bannerImg = bellezaBanners[cat] || 'https://zenestetic.com/wp-content/uploads/2025/08/BELLEZA-1024x576.png';
             }
             
             const tarjetasHTML = ritualesCategoria.map(ritual => `
@@ -1255,7 +1255,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="w-full flex flex-col category-section" data-category="${cat}">
                     <!-- Cabecera Categoría (Botón Acordeón) -->
                     <div class="category-header flex items-center px-6 md:px-10 group" onclick="toggleAccordion('${cat}')">
-                        <div class="category-banner" style="background-image: url('${bannerImg}')"></div>
+                        <div class="category-banner ${currentRitualType === 'templo' ? 'banner-white' : ''}" style="background-image: ${bannerImg ? `url('${bannerImg}')` : 'none'}"></div>
                         <div class="relative z-10 flex items-center justify-between w-full">
                             <div class="flex flex-col">
                                 <span class="text-[#39280F]/50 text-xs md:text-sm font-bold uppercase tracking-[0.3em] mb-1 category-pretitle">Descubre</span>

@@ -551,7 +551,7 @@
                 
                 <!-- Columna Izquierda: Imagen y Selección (50%) -->
                 <div class="flex flex-col gap-6">
-                    <div class="w-full h-full bg-white border border-sand rounded-2xl overflow-hidden shadow-sm flex items-center justify-center">
+                    <div class="w-full h-full bg-[#F2E5D6] border border-[#39280F]/10 rounded-2xl overflow-hidden shadow-sm flex items-center justify-center">
                         <div class="relative inline-block max-w-full max-h-full">
                             <img id="schedule-img" src="agenda/Marzo 26.jpeg" alt="Horario de Talleres" class="max-w-full max-h-[70vh] w-auto h-auto block">
                             <!-- Capa de puntos interactivos -->
@@ -562,14 +562,14 @@
 
                 <!-- Columna Derecha: Tarjeta de Detalle (50%) -->
                 <div class="flex flex-col">
-                    <div id="taller-detalle-container" class="bg-white border-2 border-primary/20 rounded-2xl p-6 md:p-8 h-full shadow-xl relative overflow-hidden flex flex-col items-center justify-center">
+                    <div id="taller-detalle-container" class="bg-[#F2E5D6] border-2 border-primary/20 rounded-2xl p-6 md:p-8 h-full shadow-xl relative overflow-hidden flex flex-col items-center justify-center">
                         <div id="taller-detalle-content" class="w-full flex flex-col items-center justify-center transition-opacity duration-300">
                             <!-- Estado inicial: Invitación a seleccionar -->
                             <div class="flex flex-col items-center text-center py-12">
                                 <div class="size-20 bg-primary/5 rounded-full flex items-center justify-center mb-6 animate-bounce">
                                     <span class="material-symbols-outlined text-primary text-4xl">touch_app</span>
                                 </div>
-                                <h3 class="text-xl font-serif font-bold text-slate-800 mb-4 uppercase tracking-widest">Información de Actividad</h3>
+                                <h3 class="text-xl font-serif font-bold text-[#39280F] mb-4 uppercase tracking-widest">Información de Actividad</h3>
                             </div>
                         </div>
                         
@@ -591,10 +591,10 @@
     <div class="relative flex w-full flex-col p-4 md:p-8 lg:p-12">
         <header class="panel-header">
             <div class="flex items-center gap-4">
-                <button id="btn-volver-clases" class="p-2 -m-2 hover:bg-white/10 rounded-full transition-colors text-white/70">
+                <button id="btn-volver-clases" class="p-2 -m-2 hover:bg-black/5 rounded-full transition-colors text-secondary/70">
                     <span class="material-symbols-outlined">arrow_back</span>
                 </button>
-                <h2 class="panel-title text-white">Talleres</h2>
+                <h2 class="panel-title text-secondary">Talleres</h2>
             </div>
             <img src="https://eltemplobyzenestetic.es/wp-content/uploads/2022/10/LOGOTIPO-EL-TEMPLO-2-1536x867.png" class="header-logo-internal" alt="Logo Internal">
             <div class="flex justify-end items-center">
@@ -624,7 +624,7 @@
             <img src="https://eltemplobyzenestetic.es/wp-content/uploads/2022/10/LOGOTIPO-EL-TEMPLO-2-1536x867.png" class="header-logo-internal" alt="Logo Internal">
             <div class="flex justify-end items-center gap-4">
             
-            <div class="flex bg-slate-100 p-1 rounded-xl">
+            <div class="flex bg-[#F2E5D6]/80 p-1 rounded-xl border border-secondary/10">
                 <button onclick="switchAdminTab('resumen')" id="tab-btn-resumen" class="admin-tab-btn active px-4 py-2 rounded-lg text-sm font-bold transition-all flex items-center gap-2">
                     <span class="material-symbols-outlined text-lg">dashboard</span>
                     Inicio

@@ -1721,8 +1721,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const list = document.getElementById('admin-ritual-list');
         if (!list) return;
         
-        list.innerHTML = MOCK_RITUALES.map(ritual => `
-            <button onclick="cargarRitualEnEditor(${ritual.id})" class="w-full p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-primary/30 hover:shadow-md transition-all text-left flex items-center justify-between group">
+        // Combinar datos locales para mostrar todo en el admin rituales
+        const allData = [...MOCK_RITUALES, ...BELLEZA_DATA];
+
+        list.innerHTML = allData.map(ritual => `
+            <button onclick="cargarRitualEnEditor('${ritual.id}')" class="w-full p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-white hover:border-primary/30 hover:shadow-md transition-all text-left flex items-center justify-between group">
                 <div class="flex flex-col gap-1 overflow-hidden">
                     <span class="text-[10px] font-bold text-primary uppercase tracking-widest">${ritual.categoria || 'Otros'}</span>
                     <span class="text-sm font-bold text-slate-800 truncate">${ritual.titulo || 'Nueva Experiencia'}</span>
@@ -1757,27 +1760,78 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.cargarRitualEnEditor = function(id) {
-        const ritual = MOCK_RITUALES.find(r => r.id === id);
+        const allData = [...MOCK_RITUALES, ...BELLEZA_DATA];
+        const ritual = allData.find(r => r.id == id);
         if (!ritual) return;
         
         currentEditingRitualId = id;
+        
+        // Rellenar campos básicos
         document.getElementById('edit-ritual-titulo').value = ritual.titulo || '';
         document.getElementById('edit-ritual-desc').value = ritual.descripcion || '';
         document.getElementById('edit-ritual-duracion').value = ritual.duracion || '';
         document.getElementById('edit-ritual-precio').value = ritual.precio || '';
+        
         const fechaEl = document.getElementById('edit-ritual-fecha');
         if (fechaEl) fechaEl.value = ritual.fecha || '';
+        
         const imgField = document.getElementById('edit-ritual-imagen');
         imgField.value = ritual.image || ritual.imagen || '';
         
+        // --- LÓGICA CATEGORÍA ---
+        updateCategorySelect();
+        const catSelect = document.getElementById('edit-ritual-categoria-select');
+        const catNuevaInput = document.getElementById('edit-ritual-categoria-nueva');
+        
+        if (catSelect) {
+            catSelect.value = ritual.categoria || 'Otros';
+            // Si el valor no está en el select (categoría personalizada que ya no existe)
+            if (catSelect.selectedIndex === -1) {
+                catSelect.value = 'NEW';
+                catNuevaInput.value = ritual.categoria;
+                catNuevaInput.classList.remove('hidden');
+            } else {
+                catNuevaInput.classList.add('hidden');
+                catNuevaInput.value = '';
+            }
+        }
+
         // Actualizar vista previa
         updateRitualPreview(imgField.value);
 
         // Mostrar botón borrar
         if (btnDeleteRitual) btnDeleteRitual.classList.remove('hidden');
         
-        // Hacer scroll al formulario en móviles
+        // Hacer scroll al formulario
         document.getElementById('admin-ritual-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function updateCategorySelect() {
+        const catSelect = document.getElementById('edit-ritual-categoria-select');
+        if (!catSelect) return;
+
+        // Extraer categorías únicas de ambos centros
+        const allData = [...MOCK_RITUALES, ...BELLEZA_DATA];
+        const categories = [...new Set(allData.map(r => r.categoria).filter(c => c))];
+        
+        let targetHtml = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('');
+        targetHtml += `<option value="NEW" class="font-bold text-primary italic">+ Crear nueva categoría...</option>`;
+        
+        catSelect.innerHTML = targetHtml;
+    }
+
+    // Listener para el selector de categoría
+    const catSelectEl = document.getElementById('edit-ritual-categoria-select');
+    const catNuevaInputEl = document.getElementById('edit-ritual-categoria-nueva');
+    if (catSelectEl && catNuevaInputEl) {
+        catSelectEl.addEventListener('change', (e) => {
+            if (e.target.value === 'NEW') {
+                catNuevaInputEl.classList.remove('hidden');
+                catNuevaInputEl.focus();
+            } else {
+                catNuevaInputEl.classList.add('hidden');
+            }
+        });
     }
 
     if (btnDeleteRitual) {
@@ -1841,15 +1895,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnSaveRitualTop = document.getElementById('btn-save-ritual-top');
     
     function saveRitualAction() {
-        let index = MOCK_RITUALES.findIndex(r => r.id === currentEditingRitualId);
+        const id = currentEditingRitualId;
+        if (!id) {
+            showToast('Selecciona una experiencia primero');
+            return;
+        }
+
+        // Determinar en qué centro (array) está la experiencia
+        let isBelleza = false;
+        let index = MOCK_RITUALES.findIndex(r => r.id == id);
+        let targetArray = MOCK_RITUALES;
+
+        if (index === -1) {
+            index = BELLEZA_DATA.findIndex(r => r.id == id);
+            if (index !== -1) {
+                isBelleza = true;
+                targetArray = BELLEZA_DATA;
+            }
+        }
         
-        if (!currentEditingRitualId || index === -1) {
-            // Auto crear si no había nada seleccionado
-            const newId = Date.now();
-            currentEditingRitualId = newId;
-            const newRitual = { id: newId, titulo: '', descripcion: '', precio: '', fecha: '', imagen: '', image: '', categoria: 'Otros' };
+        // Si no se encuentra (caso de "Nuevo"), por defecto se añade a rituales (templo)
+        if (index === -1) {
+            const newRitual = { id: id, titulo: '', descripcion: '', precio: '', fecha: '', imagen: '', image: '', categoria: 'Otros' };
             MOCK_RITUALES.unshift(newRitual);
             index = 0;
+            targetArray = MOCK_RITUALES;
+            isBelleza = false;
         }
 
         const tituloVal = document.getElementById('edit-ritual-titulo')?.value || 'Nueva Experiencia';
@@ -1859,21 +1930,38 @@ document.addEventListener('DOMContentLoaded', () => {
         const fechaEl = document.getElementById('edit-ritual-fecha');
         const imgVal = getDirectImgLink(document.getElementById('edit-ritual-imagen')?.value || '');
         
-        MOCK_RITUALES[index] = {
-            ...MOCK_RITUALES[index],
+        // Lógica de categoría
+        const catSelect = document.getElementById('edit-ritual-categoria-select');
+        const catNueva = document.getElementById('edit-ritual-categoria-nueva');
+        let catFinal = catSelect?.value || 'Otros';
+        if (catFinal === 'NEW') {
+            catFinal = (catNueva?.value.trim() || 'NUEVA').toUpperCase();
+        }
+
+        const updatedRitual = {
+            ...targetArray[index],
             titulo: tituloVal,
             descripcion: descVal,
             duracion: durVal,
             precio: precVal,
+            categoria: catFinal,
             fecha: fechaEl ? fechaEl.value : '',
             imagen: imgVal,
             image: imgVal
         };
 
-        if(window.saveToCloud) window.saveToCloud('rituales', MOCK_RITUALES, RITUALES_STORAGE_KEY); else localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
+        if (isBelleza) {
+            BELLEZA_DATA[index] = updatedRitual;
+            localStorage.setItem('templo_belleza_config', JSON.stringify(BELLEZA_DATA));
+        } else {
+            MOCK_RITUALES[index] = updatedRitual;
+            if(window.saveToCloud) window.saveToCloud('rituales', MOCK_RITUALES, RITUALES_STORAGE_KEY); 
+            else localStorage.setItem(RITUALES_STORAGE_KEY, JSON.stringify(MOCK_RITUALES));
+        }
+
         showToast('Experiencia guardada correctamente');
         renderAdminRituales();
-        renderRituales(); // Actualizar vista pública
+        renderRituales();
     }
 
     if (btnSaveRitual) btnSaveRitual.addEventListener('click', saveRitualAction);
